@@ -2,8 +2,12 @@
 
 interface IPlayer
 {
+    /*
     private $_ships;
 
+    public static $verbose;
+    */
+    
     public function __construct(array $ships);
 
     
@@ -19,6 +23,8 @@ return false if count($_ships) = 0
     private function order();
     private function movement();
     private function shoot();
+
+    public function check_collision($xMin, $xMax, $yMin, $yMax);
     
 }
 

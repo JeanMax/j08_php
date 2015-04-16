@@ -2,9 +2,9 @@
 
 trait Dice
 {
-    public function throw_it()
+    public function roll()
     {
-        //TODO
+        return rand(1, 6);
     }
 }
 

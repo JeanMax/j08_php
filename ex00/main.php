@@ -1,9 +1,9 @@
 <?php
 
-require_once("IPlayer.class.php");
-require_once("IGun.class.php");
-require_once("IZone.class.php");
-require_once("IShip.class.php");
+require_once("Player.class.php");
+require_once("Gun.class.php");
+require_once("Zone.class.php");
+require_once("Ship.class.php");
 
 function init()
 {
@@ -31,10 +31,18 @@ init();
 while (42)
 {
 	if (!$p1->play())
+    {
+        echo "p2 won";
 		break ;
+    }
+    //TODO: check if player has been killed
 
 	if (!$p2->play())
+    {
+        echo "p1 won";
 		break ;
+    }
+    //TODO: check if player has been killed
 }
 
 echo "game over";

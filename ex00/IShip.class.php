@@ -4,6 +4,7 @@ require_once("Dice.trait.php");
 
 interface IShip
 {
+    /*
     private $_name;
     private $_width;
     private $_height;
@@ -17,22 +18,19 @@ interface IShip
     private $_activated;
     private $_still;
 
-    private $_bonus_speed;
-    private $_bonus_shield;
-    private $_bonus_gun;
-
-    use Dice;
+    public static $verbose;
+    */
 
     //MAGIC
-    public function __construct(array $kw_arg)
+    public function __construct(array $kw_arg);
 
         
     //PUBLIC
         //bonus
-    public function bonus_move($pp);
-    public function bonus_shield($pp);
-    public function bonus_gun($pp);
-    public function bonus_repair($pp);
+    public function bonusSpeed($pp);
+    public function bonusShield($pp);
+    public function bonusGun($pp);
+    public function bonusRepair($pp);
 
         //move
     public function bend($way); //todo : edit w/h
