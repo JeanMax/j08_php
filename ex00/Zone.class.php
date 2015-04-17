@@ -8,6 +8,8 @@ class Zone implements IZone
     private $_height;
     private $_map; //array
 
+	public static $verbose = false;
+
     //MAGIC
 	public __construct(array $kw_arg)
 	{
@@ -23,20 +25,30 @@ class Zone implements IZone
 			$this->init_obstacle($kw_arg["obstacle"]);
 		else
 			$this->init_obstacle(array());
+
 		$this->init_Map($this->getHeight, $this->getWidth, $this->getP1_ships, $this->getP2_ships);
+
+		if (self::$verbose)
+			echo "Zone constructed.".PHP_EOL;
 	}
 
-    //PUBLIC METHOD
+	public function __destruct(array $ships)
+	{
+		if (self::$verbose)
+			echo "Zone destructed.".PHP_EOL;
+	}
+
+	//PUBLIC METHOD
 	public function init_obstacle($arr)
 	{
-        //TODO
+		//TODO
 	}
 	public function setMap($w, $h, $p1s, $p2s)
 	{
-        //TODO
+		//TODO
 	}
 
-    //SET
+	//SET
 	public function setWidth($arg)
 	{
 		$this->_width = $arg;
@@ -46,7 +58,7 @@ class Zone implements IZone
 		$this->_height = $arg;
 	}
 
-    //GET
+	//GET
 	public function getWidth()
 	{
 		return $this->_width;

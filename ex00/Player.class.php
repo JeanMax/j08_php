@@ -4,54 +4,52 @@ class Player
 {
     private $_ships;
 
-    public static $verbose;
+    public static $verbose = false;
 
     //MAGIC
     public function __construct(array $ships)
     {
+		$this->_ships = array();
+		$this->addShips($ships);
 
+		if (self::$verbose)
+			echo "Player constructed.".PHP_EOL;
+	}
 
-    }
+	public function __destruct(array $ships)
+	{
+		if (self::$verbose)
+			echo "Player destructed.".PHP_EOL;
+	}
 
+	//PUBLIC METHOD
+	public function isAlive()
+	{
+		$ships = $this->getShips();
 
-    //PUBLIC METHOD
-	public function play()
-    {
+		foreach ($ships as $key => $ship)
+			if ($ship->getPc() <= 0)
+				unset($ships[$key]); //cleaning dead ship
 
-    }
-	/*
-		call : order, movement, shoot
+		if (count($this->getShips()) == 0)
+			return false;
+		else
+			return true;
+	}
 
-		set to false $ships->_activated
+	//GET
+	public function getShips()
+	{
+		return $this->_ships;
+	}
 
-		return false if count($_ships) = 0
-	*/
+	//SET
+	public function addShips($ships)
+	{
+		foreach ($ships as $ship)
+			array_push($this->_ships, $ship);
+	}
 
-	private function order()
-    {
-
-    }
-	private function movement()
-    {
-
-    }
-	private function shoot()
-    {
-
-    }
-
-    //GET
-    public function getShips()
-    {
-        return $this->_ships;
-    }
-
-    //SET
-    public function setShips(array $ships)
-    {
-        $this->_ships = $ships;
-    }
-    
 }
 
 ?>

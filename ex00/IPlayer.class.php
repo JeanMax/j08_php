@@ -3,29 +3,21 @@
 interface IPlayer
 {
     /*
-    private $_ships;
+	  private $_ships;
 
-    public static $verbose;
+	  public static $verbose;
     */
-    
+
     public function __construct(array $ships);
 
-    
-    public function play();
+	public function isAlive();
 /*
-call : order, movement, shoot
-
-set to false $ships->_activated
-
-return false if count($_ships) = 0
+	return false if the player is ship-less
 */
 
-    private function order();
-    private function movement();
-    private function shoot();
 
-    public function check_collision($xMin, $xMax, $yMin, $yMax);
-    
+	public function check_collision($xMin, $xMax, $yMin, $yMax);
+
 }
 
 ?>

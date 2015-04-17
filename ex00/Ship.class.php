@@ -18,7 +18,6 @@ class Ship implements IShip
 	private $_activated;
 	private $_still;
 
-
 	public static $verbose = false;
 
 	use Dice;
@@ -88,29 +87,65 @@ class Ship implements IShip
 			echo "Ship destructed.".PHP_EOL;
 	}
 
-	//bonus METHOD
-    /*
-      the following bonus method will add bonus stats to the actual stats,
-      so you may need to check return to sub the bonus at the end of player turn
-      (except for repair, and shield since it's directly add the arg)
-    */
-	public function bonusSpeed($pp) 
+	//PRIVATE METHOD
+	private function _order($ship)
 	{
-        $added = $pp * $this->roll();
+
+	}
+	private function _movement($ship)
+	{
+
+	}
+	private function _shoot($ship)
+	{
+
+	}
+
+	//PUBLIC
+	public function play(array $order,)
+	{
+		$ships = $this->getShips();
+
+		foreach ($ships as $ship) // TODO: let the player choose...
+		{
+			$this->_order($ship);
+			$this->_movement($ship);
+			$this->_shoot($ship);
+			$ship->setActivated(true);
+		}
+
+		foreach ($ships as $key => $ship)
+		{
+			$ship->setActivated(false); //cleaning activation
+			if ($ship->getPc() <= 0)
+				unset($ships[$key]); //cleaning dead ship
+		}
+
+	}
+
+	//bonus METHOD
+	/*
+		the following bonus method will add bonus stats to the actual stats,
+		so you may need to check return to sub the bonus at the end of player turn
+		(except for repair, and shield since it's directly add the arg)
+	*/
+	public function bonusSpeed($pp)
+	{
+		$added = $pp * $this->roll();
 		$this->setSpeed($this->getSpeed() + $added);
-        return $added;
+		return $added;
 	}
 	public function bonusGun($pp)
 	{
-        $gun = $this->getGun();
-        $added = $pp * $this->roll();
+		$gun = $this->getGun();
+		$added = $pp * $this->roll();
 		$gun->setLoad($gun->getLoad() + $added);
-        return $added;
+		return $added;
 	}
 	public function bonusRepair($pp)
 	{
-        if ($this->getStill())
-            $this->setPc( $this->getPc() + ($pp * $this->roll()) );
+		if ($this->getStill())
+			$this->setPc( $this->getPc() + ($pp * $this->roll()) );
 	}
 	public function bonusShield($pp)
 	{
@@ -120,17 +155,17 @@ class Ship implements IShip
 	//move METHOD
 	public function bend($way) //todo : edit w/h
 	{
-        //TODO
+		//TODO
 	}
 	public function move($length)
 	{
-        //TODO
+		//TODO
 	}
 
 	//shoot METHOD
 	public function shoot()
 	{
-        //TODO
+		//TODO
 	}
 
 	//GET
