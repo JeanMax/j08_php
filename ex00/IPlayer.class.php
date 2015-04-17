@@ -10,6 +10,8 @@ interface IPlayer
 
     public function __construct(array $ships);
 
+	public function canPlay();
+
 	public function isAlive();
 /*
 	return false if the player is ship-less

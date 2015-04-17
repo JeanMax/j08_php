@@ -25,13 +25,7 @@ interface IShip
 	public function __construct(array $kw_arg);
 
 	//PUBLIC
-	//bonus
-	public function bonusSpeed($pp);
-	public function bonusShield($pp);
-	public function bonusGun($pp);
-	public function bonusRepair($pp);
-
-	public function play();
+	public function play(TODO);
 /*
 	call : order, movement, shoot
 
@@ -40,16 +34,22 @@ interface IShip
 	return false if count($_ships) = 0
 */
 
-    private function _order($ship);
-    private function _movement($ship);
-    private function _shoot($ship);
+	//order
+	private function _order(array $order);
+/*
+	array(	'speed':int,
+			'shoot':int,
+			'shield':int,
+			'repair':int)		
+	value set as 0pp if no key
+	return false if shit happened
+*/
 
 	//move
-	public function bend($way); //todo : edit w/h
-	public function move($length);
-
+	private function _bend($way); //todo : edit w/h
+	private function _move($length);
 	//shoot
-	public function shoot();
-}
+	private function _shoot();
+	}
 
-?>
+	?>

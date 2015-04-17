@@ -13,8 +13,10 @@ class Ship implements IShip
 	private $_pp; //point moteur
 	private $_speed;
 	private $_maneuver;
-	private $_shield;
 	private $_gun;
+	private $_bonusShield;
+	private $_bonusSpeed;
+	private $_bonusShoot;
 	private $_activated;
 	private $_still;
 
@@ -30,6 +32,9 @@ class Ship implements IShip
 		$this->setName($kw_arg["name"]);
 		$this->setSprite($kw_arg["sprite"]);
 		$this->setGun($kw_arg["gun"]);
+		$this->setBonusShield(0);
+		$this->setBonusSpeed(0);
+		$this->setBonusShoot(0);
 
 		//optionnal
 		if (array_key_exists("pc", $kw_arg))
@@ -51,11 +56,6 @@ class Ship implements IShip
 			$this->setManeuver($kw_arg["maneuver"]);
 		else
 			$this->setManeuver(4);
-
-		if (array_key_exists("shield", $kw_arg))
-			$this->setShield($kw_arg["shield"]);
-		else
-			$this->setShield(0);
 
 		if (array_key_exists("activated", $kw_arg))
 			$this->setActivated($kw_arg["activated"]);
@@ -87,83 +87,50 @@ class Ship implements IShip
 			echo "Ship destructed.".PHP_EOL;
 	}
 
-	//PRIVATE METHOD
-	private function _order($ship)
-	{
-
-	}
-	private function _movement($ship)
-	{
-
-	}
-	private function _shoot($ship)
-	{
-
-	}
-
 	//PUBLIC
-	public function play(array $order,)
+	public function play(array $zboub)
 	{
-		$ships = $this->getShips();
+		$this->_order($zboub["order"]);
+		$this->_move($zboub["move"]);
+		$this->_shoot($zboub["shoot"]);
 
-		foreach ($ships as $ship) // TODO: let the player choose...
-		{
-			$this->_order($ship);
-			$this->_movement($ship);
-			$this->_shoot($ship);
-			$ship->setActivated(true);
-		}
-
-		foreach ($ships as $key => $ship)
-		{
-			$ship->setActivated(false); //cleaning activation
-			if ($ship->getPc() <= 0)
-				unset($ships[$key]); //cleaning dead ship
-		}
-
+		$this->setBonusShield(0);
+		$this->setBonusSpeed(0);
+		$this->setBonusShoot(0);
+		$this->setActivated(true);
 	}
 
-	//bonus METHOD
-	/*
-		the following bonus method will add bonus stats to the actual stats,
-		so you may need to check return to sub the bonus at the end of player turn
-		(except for repair, and shield since it's directly add the arg)
-	*/
-	public function bonusSpeed($pp)
+	//PRIVATE METHOD
+	//order
+	private function _order(array $order)
 	{
-		$added = $pp * $this->roll();
-		$this->setSpeed($this->getSpeed() + $added);
-		return $added;
-	}
-	public function bonusGun($pp)
-	{
-		$gun = $this->getGun();
-		$added = $pp * $this->roll();
-		$gun->setLoad($gun->getLoad() + $added);
-		return $added;
-	}
-	public function bonusRepair($pp)
-	{
-		if ($this->getStill())
-			$this->setPc( $this->getPc() + ($pp * $this->roll()) );
-	}
-	public function bonusShield($pp)
-	{
-		$this->setShield($this->getShield() + $pp);
+		if (array_key_exists("repair", $order))
+			$this->setPc($order["repair"] * $this->roll()); //be sure it's still
+
+		if (array_key_exists("shield", $order))
+			$this->setBonusShield($order["shield"]);
+
+		if (array_key_exists("speed", $order))
+			$this->setBonusSpeed($$order["speed"] * $this->roll());
+
+		if (array_key_exists("shoot", $order))
+			$this->setBonusShoot($order["shoot"] * $this->roll());
+
+		return true;
 	}
 
-	//move METHOD
-	public function bend($way) //todo : edit w/h
+	//move
+	private function _move(array $move)
 	{
 		//TODO
 	}
-	public function move($length)
+	private function _bend($way) //TODO: edit w/h
 	{
 		//TODO
 	}
 
-	//shoot METHOD
-	public function shoot()
+	//shoot
+	private function _shoot(array $shoot)
 	{
 		//TODO
 	}
@@ -201,9 +168,9 @@ class Ship implements IShip
 	{
 		return $this->_maneuver;
 	}
-	public function getShield()
+	public function getBonusShield()
 	{
-		return $this->_shield;
+		return $this->_bonusShield;
 	}
 	public function getGun()
 	{
@@ -251,9 +218,17 @@ class Ship implements IShip
 	{
 		$this->_maneuver = intval($maneuver);
 	}
-	public function setShield($shield)
+	public function setBonusShield($shield)
 	{
-		$this->_shield = intval($shield);
+		$this->_bonusShield = intval($shield);
+	}
+	public function setBonusSpeed($speed)
+	{
+		$this->_bonusSpeed = intval($speed);
+	}
+	public function setBonusShoot($shoot)
+	{
+		$this->_bonusShoot = intval($shoot);
 	}
 	public function setGun($gun)
 	{
