@@ -16,14 +16,9 @@ class Gun
 	use Dice;
 
 	//MAGIC
-	public function __construct($kwargv)
+	public function __construct($kw_arg)
 	{
-		$this->setName($kwargv['name']);
-		$this->setLoad($kwargv['load']);
-		$this->setSrange($kwargv['srange']); //s = short
-		$this->setMrange($kwargv['mrange']); //m = middle
-		$this->setLrange($kwargv['lrange']); //l = long
-		$this->setArea($kwargv['area']);
+		$this->_init($kw_arg);
 
         if (self::$verbose)
 			echo "Gun constructed.".PHP_EOL;
@@ -34,6 +29,17 @@ class Gun
         if (self::$verbose)
 			echo "Gun destructed.".PHP_EOL;
     }
+
+	//PRIVATE
+	private function _init(array $kw_arg)
+	{
+		$this->setName($kw_arg['name']);
+		$this->setLoad($kw_arg['load']);
+		$this->setSrange($kw_arg['srange']); //s = short
+		$this->setMrange($kw_arg['mrange']); //m = middle
+		$this->setLrange($kw_arg['lrange']); //l = long
+		$this->setArea($kw_arg['area']);
+	}
 
 	//SET
 	public function setName($arg)

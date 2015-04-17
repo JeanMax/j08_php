@@ -27,14 +27,42 @@ class Ship implements IShip
 	//MAGIC
 	public function __construct(array $kw_arg)
 	{
+		$this->_init($kw_arg);
+
+		if (self::$verbose)
+			echo "Ship constructed.".PHP_EOL;
+	}
+
+	public function __destruct()
+	{
+		if (self::$verbose)
+			echo "Ship destructed.".PHP_EOL;
+	}
+
+	//PUBLIC
+	public function play(array $zboub)
+	{
+		$this->_order($zboub["order"]);
+		$this->_move($zboub["move"]);
+		$this->_shoot($zboub["shoot"]);
+
+		$this->setBonusShield(0);
+		$this->setBonusSpeed(0);
+		$this->setBonusShoot(0);
+		$this->setActivated(true);
+	}
+
+	//PRIVATE METHOD
+	private function _init(array $kw_arg)
+	{
+		$this->setBonusShield(0);
+		$this->setBonusSpeed(0);
+		$this->setBonusShoot(0);
 
 		//needed
 		$this->setName($kw_arg["name"]);
 		$this->setSprite($kw_arg["sprite"]);
 		$this->setGun($kw_arg["gun"]);
-		$this->setBonusShield(0);
-		$this->setBonusSpeed(0);
-		$this->setBonusShoot(0);
 
 		//optionnal
 		if (array_key_exists("pc", $kw_arg))
@@ -76,31 +104,8 @@ class Ship implements IShip
 			$this->setHeight($kw_arg["height"]);
 		else
 			$this->setHeight(4);
-
-		if (self::$verbose)
-			echo "Ship constructed.".PHP_EOL;
 	}
 
-	public function __destruct()
-	{
-		if (self::$verbose)
-			echo "Ship destructed.".PHP_EOL;
-	}
-
-	//PUBLIC
-	public function play(array $zboub)
-	{
-		$this->_order($zboub["order"]);
-		$this->_move($zboub["move"]);
-		$this->_shoot($zboub["shoot"]);
-
-		$this->setBonusShield(0);
-		$this->setBonusSpeed(0);
-		$this->setBonusShoot(0);
-		$this->setActivated(true);
-	}
-
-	//PRIVATE METHOD
 	//order
 	private function _order(array $order)
 	{
