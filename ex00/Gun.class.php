@@ -34,7 +34,7 @@ class Gun
         if (self::$verbose)
 			echo "Gun destructed.".PHP_EOL;
     }
-	
+
 	//SET
 	public function setName($arg)
 	{

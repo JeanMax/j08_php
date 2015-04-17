@@ -1,5 +1,7 @@
 <?PHP
+
 require_once('IZone.class.php');
+
 class Zone implements IZone
 {
 	public $i = 0;
@@ -8,6 +10,9 @@ class Zone implements IZone
     private $_height;
     private $_map; //array
 
+	public static $verbose = false;
+
+	//MAGIC
 	public function __construct(array $kw_arg)
 	{
 		if (array_key_exists("width", $kw_arg))
@@ -15,17 +20,25 @@ class Zone implements IZone
 		else
 			$this->setWidth(150);
 		if (array_key_exists("height", $kw_arg))
-            $this->setHeight($kw_arg["height"]);
+			$this->setHeight($kw_arg["height"]);
 		else
-            $this->setHeight(100);
+			$this->setHeight(100);
 		if (array_key_exists("obstacle", $kw_arg))
 			$this->setMap($this->getHeight(), $this->getWidth(), $kw_arg["obstacle"]);
 		else
 			$this->setMap($this->getHeight(), $this->getWidth(), array());
-	}
-	
-	//SET
 
+		if (self::$verbose)
+			-echo "Zone constructed.".PHP_EOL;
+	}
+
+	public function __destruct()
+	{
+		if (self::$verbose)
+			echo "Zone destructed.".PHP_EOL;
+	}
+
+	//SET
 	public function init_obstacle($obs)
 	{
 		foreach ($obs as $key => $value)
@@ -56,42 +69,43 @@ class Zone implements IZone
 		$this->_width = $arg;
 	}
 	public function setHeight($arg)
-    {
-        $this->_height = $arg;
-    }
+	{
+		$this->_height = $arg;
+	}
 
 	//GET
-	
 	public function getMap()
 	{
 		return $this->_map;
 	}
 	public function getWidth()
-    {
-        return $this->_width;
-    }
+	{
+		return $this->_width;
+	}
 	public function getHeight()
-    {
-        return $this->_height;
-    }
+	{
+		return $this->_height;
+	}
 }
 
+/*
 //TEST
-
 $test1 = new Zone(array("obstacle" => array(12 => 2, 5 => 5, 2 => 8), "height" => 10, "width" => 15));
 $i = 0;
 while ($i <= $test1->getHeight() + 1)
 {
-	$j = 0;
-	while ($j <= $test1->getWidth() + 1)
-	{
-		if ($j == 0)
-			print($test1->getMap()[$i][$j]);
-		else
-			print(" " . $test1->getMap()[$i][$j]);
-		$j++;
-	}
-	print("\n");
-	$i++;
+$j = 0;
+while ($j <= $test1->getWidth() + 1)
+{
+if ($j == 0)
+print($test1->getMap()[$i][$j]);
+else
+print(" " . $test1->getMap()[$i][$j]);
+$j++;
 }
+print("\n");
+$i++;
+*/
+}
+
 ?>
