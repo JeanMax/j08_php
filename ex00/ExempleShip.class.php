@@ -8,9 +8,13 @@ class ExempleShip extends Ship
 	//MAGIC
 	public function __construct()
 	{
-		$this->_init(array("name" => "Zboub",
-						   "sprite" => ":-",
-						   "gun" => New ExempleGun()));
+		$this->init(array("name" => "Zboub",
+						   "sprite" => "img/vaisseau_mere.png",
+						   "gun" => New ExempleGun(),
+                           "xmin" => 10,
+                           "ymin" => 10,
+                           "xmax" => 20,
+                           "ymax" => 14));
         
 
 		if (self::$verbose)

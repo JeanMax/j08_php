@@ -7,7 +7,7 @@ class ExempleGun extends Gun
 	//MAGIC
 	public function __construct()
 	{
-		$this->_init(array("name" => "Zboub",
+		$this->init(array("name" => "Zboub",
 						   "load" => 2,
 						   "srange" => 3,
 						   "mrange" => 4,

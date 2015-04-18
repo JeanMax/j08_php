@@ -18,7 +18,7 @@ class Gun
 	//MAGIC
 	public function __construct($kw_arg)
 	{
-		$this->_init($kw_arg);
+		$this->init($kw_arg);
 
         if (self::$verbose)
 			echo "Gun constructed.".PHP_EOL;
@@ -31,7 +31,7 @@ class Gun
     }
 
 	//PRIVATE
-	private function _init(array $kw_arg)
+	public function init(array $kw_arg)
 	{
 		$this->setName($kw_arg['name']);
 		$this->setLoad($kw_arg['load']);

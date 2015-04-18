@@ -6,6 +6,10 @@
     <body>
          <table>
 <?php
+     require_once("ExempleShip.class.php");
+     require_once("ExempleGun.class.php");
+
+$ship = new ExempleShip();
      
 $X = 12 * $ship->getXMin();
 $Y = 12 * $ship->getYMin();

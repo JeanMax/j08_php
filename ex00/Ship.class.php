@@ -6,8 +6,6 @@ require_once("IShip.class.php");
 class Ship implements IShip
 {
     private $_name;
-    private $_width;
-    private $_height;
     private $_sprite;
 	private $_pc; //point de coque
 	private $_pp; //point moteur
@@ -19,10 +17,10 @@ class Ship implements IShip
 	private $_bonusShoot;
 	private $_activated;
 	private $_still;
-    private $_xMin;
-    private $_yMin;
-    private $_xMax;
-    private $_yMax;
+	private $_xMin;
+	private $_yMin;
+	private $_xMax;
+	private $_yMax;
 
 	public static $verbose = false;
 
@@ -31,7 +29,7 @@ class Ship implements IShip
 	//MAGIC
 	public function __construct(array $kw_arg)
 	{
-		$this->_init($kw_arg);
+		$this->init($kw_arg);
 
 		if (self::$verbose)
 			echo "Ship constructed.".PHP_EOL;
@@ -57,7 +55,7 @@ class Ship implements IShip
 	}
 
 	//PRIVATE METHOD
-	private function _init(array $kw_arg)
+	public function init(array $kw_arg)
 	{
 		$this->setBonusShield(0);
 		$this->setBonusSpeed(0);
@@ -99,16 +97,26 @@ class Ship implements IShip
 		else
 			$this->setStill(true);
 
-		if (array_key_exists("width", $kw_arg))
-			$this->setWidth($kw_arg["width"]);
+        if (array_key_exists("xmin", $kw_arg))
+            $this->setXMin($kw_arg["xmin"]);
 		else
-			$this->setWidth(1);
+			$this->setXMin(0);
 
-		if (array_key_exists("height", $kw_arg))
-			$this->setHeight($kw_arg["height"]);
+        if (array_key_exists("ymin", $kw_arg))
+            $this->setYMin($kw_arg["ymin"]);
 		else
-			$this->setHeight(4);
-	}
+			$this->setYMin(0);
+
+        if (array_key_exists("xmax", $kw_arg))
+            $this->setXMax($kw_arg["xmax"]);
+		else
+			$this->setXMax(0);
+
+        if (array_key_exists("ymax", $kw_arg))
+            $this->setYMax($kw_arg["ymax"]);
+		else
+			$this->setYMax(0);
+}
 
 	//order
 	private function _order(array $order)
@@ -149,14 +157,6 @@ class Ship implements IShip
 	{
 		return $this->_name;
 	}
-	public function getWidth()
-	{
-		return $this->_width;
-	}
-	public function getHeight()
-	{
-		return $this->_height;
-	}
 	public function getSprite()
 	{
 		return $this->_sprite;
@@ -193,36 +193,27 @@ class Ship implements IShip
 	{
 		return $this->_still;
 	}
-    public function getXMin()
-    {
-        return $this->_xMin;
-    }
-    public function getYMin()
-    {
-        return $this->_yMin;
-    }
-    public function getXMax()
-    {
-        return $this->_xMax;
-    }
-    public function getYMax()
-    {
-        return $this->_yMax;
-    }
+	public function getXMin()
+	{
+		return $this->_xMin;
+	}
+	public function getYMin()
+	{
+		return $this->_yMin;
+	}
+	public function getXMax()
+	{
+		return $this->_xMax;
+	}
+	public function getYMax()
+	{
+		return $this->_yMax;
+	}
 
-
-    //SET
+	//SET
 	public function setName($name)
 	{
 		$this->_name = $name;
-	}
-	public function setWidth($width)
-	{
-		$this->_width = intval($width);
-	}
-	public function setHeight($height)
-	{
-		$this->_height = intval($height);
 	}
 	public function setSprite($sprite)
 	{
@@ -268,22 +259,23 @@ class Ship implements IShip
 	{
 		$this->_still = $still;
 	}
-    public function setXMin($x)
-    {
-        $this->_xMin = $x;
-    }
-    public function setYMin($y)
-    {
-        $this->_yMin = $y;
-    }
-    public function setXMax($x)
-    {
-        $this->_xMax = $x;
-    }
-    public function setYMax($y)
-    {
-        $this->_yMax = $y;
-    }
+	public function setXMin($x)
+	{
+		$this->_xMin = $x;
+	}
+	public function setYMin($y)
+	{
+		$this->_yMin = $y;
+	}
+	public function setXMax($x)
+	{
+		$this->_xMax = $x;
+	}
+	public function setYMax($y)
+	{
+		$this->_yMax = $y;
+	}
+
 
 }
 
