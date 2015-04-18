@@ -1,9 +1,9 @@
 <?php
 
 require_once("Player.class.php");
-require_once("Gun.class.php");
 require_once("Zone.class.php");
-require_once("Ship.class.php");
+require_once("ExempleGun.class.php");
+require_once("ExempleShip.class.php");
 
 function init()
 {
