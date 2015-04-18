@@ -19,10 +19,10 @@ class Ship implements IShip
 	private $_bonusShoot;
 	private $_activated;
 	private $_still;
-    private $xMin;
-    private $yMin;
-    private $xMax;
-    private $yMax;
+    private $_xMin;
+    private $_yMin;
+    private $_xMax;
+    private $_yMax;
 
 	public static $verbose = false;
 
@@ -193,8 +193,25 @@ class Ship implements IShip
 	{
 		return $this->_still;
 	}
+    public function getXMin()
+    {
+        return $this->_xMin;
+    }
+    public function getYMin()
+    {
+        return $this->_yMin;
+    }
+    public function getXMax()
+    {
+        return $this->_xMax;
+    }
+    public function getYMax()
+    {
+        return $this->_yMax;
+    }
 
-	//SET
+
+    //SET
 	public function setName($name)
 	{
 		$this->_name = $name;
@@ -251,6 +268,22 @@ class Ship implements IShip
 	{
 		$this->_still = $still;
 	}
+    public function setXMin($x)
+    {
+        $this->_xMin = $x;
+    }
+    public function setYMin($y)
+    {
+        $this->_yMin = $y;
+    }
+    public function setXMax($x)
+    {
+        $this->_xMax = $x;
+    }
+    public function setYMax($y)
+    {
+        $this->_yMax = $y;
+    }
 
 }
 

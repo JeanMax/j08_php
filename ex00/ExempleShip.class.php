@@ -11,6 +11,7 @@ class ExempleShip extends Ship
 		$this->_init(array("name" => "Zboub",
 						   "sprite" => ":-",
 						   "gun" => New ExempleGun()));
+        
 
 		if (self::$verbose)
 			echo "ExempleShip constructed.".PHP_EOL;
