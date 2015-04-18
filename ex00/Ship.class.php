@@ -19,6 +19,10 @@ class Ship implements IShip
 	private $_bonusShoot;
 	private $_activated;
 	private $_still;
+    private $xMin;
+    private $yMin;
+    private $xMax;
+    private $yMax;
 
 	public static $verbose = false;
 
