@@ -5,9 +5,9 @@
 
      <body>
 
-<?php
+	 <?php
 
-     require_once("Player.class.php");
+	 require_once("Player.class.php");
 require_once("Zone.class.php");
 require_once("ExempleGun.class.php");
 require_once("ExempleShip.class.php");
@@ -40,29 +40,27 @@ function init()
 	$s3->setYMin(20);
 	$s3->setYMax(24);
 
-/*    
+/*
 	echo "<pre>";
 	print_r ($s3->getXMin().PHP_EOL);
 	print_r ($s3->getYMin().PHP_EOL);
 	print_r ($s3->getXMax().PHP_EOL);
 	print_r ($s3->getYMax().PHP_EOL);
 	echo "</pre>";
-*/
-    
+
 	$s3->rotate("left");
 	$s3->rotate("left");
 	$s3->rotate("left");
 	$s3->rotate("left");
 
-    /*  
 	echo "<pre>";
 	print_r( $s3->getXMin().PHP_EOL);
 	print_r( $s3->getYMin().PHP_EOL);
 	print_r( $s3->getXMax().PHP_EOL);
 	print_r( $s3->getYMax().PHP_EOL);
 	echo "</pre>";
-    */
-    
+*/
+
 	$p1 = New player([$s1, $s2]);
 	$p2 = New player([$s3, $s4]);
 
@@ -70,14 +68,14 @@ function init()
 						"p2" => $p2));
 	$z->aff_map();
 
-	//SAVE $z TO BDD
+	//TODO: SAVE $z TO BDD
 }
 
 function gameLoop()
 {
 	while (42)
 	{
-		//LOAD $z FROM BDD
+		//TODO: LOAD $z FROM BDD
 		if (!$p1->play()) //use html form instead (cf. form.html)
 		{
 			echo "p2 won";
@@ -88,9 +86,9 @@ function gameLoop()
 			echo "p1 won";
 			break ;
 		}
-		//SAVE $z TO BDD
+		//TODO: SAVE $z TO BDD
 
-		//LOAD $z FROM BDD
+		//TODO: LOAD $z FROM BDD
 		if (!$p2->play()) //use html form instead (cf. form.html)
 		{
 			echo "p1 won";
@@ -101,7 +99,7 @@ function gameLoop()
 			echo "p2 won";
 			break ;
 		}
-		//SAVE $z TO BDD
+		//TODO: SAVE $z TO BDD
 	}
 }
 

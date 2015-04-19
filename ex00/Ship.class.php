@@ -114,24 +114,11 @@ class Ship implements IShip
         $this->setXMax($this->getXMax() - $cste);
         $this->setYMax($this->getYMax() + $cste);
 
-/*
-        $centreX = ($this->getXMax() - $this->getXMin()) / 2;
-        $centreY = ($this->getYMax() - $this->getYMin()) / 2;
-        
-        $this->setXMin($centreY / 2 - $centreX);
-        $this->setXMax($centreY / 2 + $centreX);
-
-        $this->setYMin($centreX / 2 - $centreY);
-        $this->setYMax($centreX / 2 + $centreY);
-*/
-
-
-        
         return true;
 	}
 
 	//shoot
-	public function shoot(array $shoot)
+	public function shoot()
 	{
 		//TODO
 	}
