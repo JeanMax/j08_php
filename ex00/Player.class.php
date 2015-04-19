@@ -26,45 +26,16 @@ class Player implements IPlayer
 
 	//PUBLIC METHOD
 
-	public function play()
-	{
-		if (!$this->isAlive())
-			return false;
-/*TODO: 
-		while ($this->canPlay())
-		{
-			let me choose a $ship
-			if ($ship->getStill())
-			{
-				let me fill an $order array = array('speed':int,
-												    'shoot':int,
-										            'shield':int,
-											        'repair':int)
-			}
-			else		
-			{
-				let me fill an $order array = array('speed':int,
-													'shoot':int,
-                                                    'shield':int)
-			}
-			let me fill a $move array = ()
-			let me fill a $shoot array = ()
-			if 'the pp spent are ok)
-				$ship->play(array(	'order' => $order,
-									'move' => $move,
-									'shoot' => $shoot));
-		}
-*/
-		return true;
-	}
-
-	public function isAlive()
+	public function isAlive() // /!\ will clear temp states (activated, bonus...)
 	{
 		$ships = $this->getShips();
 
 		foreach ($ships as $key => $ship)
 		{
 			$ship->setActivated(false); //cleaning activation
+            $ship->setBonusShield(0); //cleaning bonus
+            $ship->setBonusSpeed(0);
+            $ship->setBonusShoot(0);
 			if ($ship->getPc() <= 0)
 				unset($ships[$key]); //cleaning dead ship
 		}

@@ -27,14 +27,28 @@
 		let me fill an $order array = array('speed':int,
 											'shoot':int,
 											'shield':int)
-	}
-	let me fill a $move array = ()
-	let me fill a $shoot array = ()
-	if 'the pp spent are ok)
-		$ship->play(array(	'order' => $order,
-							'move' => $move,
-							'shoot' => $shoot));
-	}
+    }
+	if (the pp spent are ok)
+		$ship->order($order)
+
+    while ("moving" && ship->getPc() > 0 && ship->getPp() > 0)
+    {
+       if ($ship->getStill())
+       { 
+          let me fill a $direction; //"left" or "right"
+          $ship->rotate($direction);
+       }
+
+        let me fill a $length
+        if (the pp spent are ok)
+              $ship->move($length);
+
+    }
+
+    let me fill a $shoot array = () 
+    if (the pp spent are ok)
+          $ship->shoot($shoot);
+  }
 */
 
 ?>

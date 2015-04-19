@@ -6,10 +6,12 @@ require_once("IShip.class.php");
 class Ship implements IShip
 {
     private $_name;
+    private $_sprite;
     private $_spriteUp;
     private $_spriteDown;
     private $_spriteLeft;
-    private $_spriteRight;
+	private $_spriteRight;
+	private $_way; //up/down/right/left
 	private $_pc; //point de coque
 	private $_pp; //point moteur
 	private $_speed;
@@ -45,16 +47,93 @@ class Ship implements IShip
 	}
 
 	//PUBLIC
-	public function play(array $zboub)
-	{
-		$this->_order($zboub["order"]);
-		$this->_move($zboub["move"]);
-		$this->_shoot($zboub["shoot"]);
 
-		$this->setBonusShield(0);
-		$this->setBonusSpeed(0);
-		$this->setBonusShoot(0);
-		$this->setActivated(true);
+	//order
+	public function _order(array $order)
+	{
+		if (array_key_exists("repair", $order))
+			$this->setPc($order["repair"] * $this->roll()); //be sure it's still
+
+		if (array_key_exists("shield", $order))
+			$this->setBonusShield($order["shield"]);
+
+		if (array_key_exists("speed", $order))
+			$this->setBonusSpeed($$order["speed"] * $this->roll());
+
+		if (array_key_exists("shoot", $order))
+			$this->setBonusShoot($order["shoot"] * $this->roll());
+
+		return true;
+	}
+
+	//move
+	public function move($length)
+	{
+		//TODO
+	}
+	public function rotate($way)
+	{
+		if ($way != "right" && $way != "left")
+			return false;
+        
+		switch ($this->getWay())
+		{
+		case "left":
+			$way == "right" ? $this->setWay("up") : $this->setWay("down");
+			break ;
+		case "right":
+			$way == "right" ? $this->setWay("down") : $this->setWay("up");
+			break ;
+		case "up":
+			$way == "right" ? $this->setWay("right") : $this->setWay("left");
+			break ;
+		case "down":
+			$way == "right" ? $this->setWay("left") : $this->setWay("right");
+			break ;
+		}
+
+        switch ($this->getWay())
+		{
+		case "left":
+            $this->setSprite($this->getSpriteLeft());
+			break ;
+		case "right":
+            $this->setSprite($this->getSpriteRight());
+			break ;
+		case "up":
+            $this->setSprite($this->getSpriteUp());
+			break ;
+		case "down":
+            $this->setSprite($this->getSpriteDown());
+			break ;
+        }
+
+        $cste = ($this->getXMax() - $this->getXMin() - ($this->getYMax() - $this->getYMin())) / 2;
+        $this->setXMin($this->getXMin() + $cste);
+        $this->setYMin($this->getYMin() - $cste);
+        $this->setXMax($this->getXMax() - $cste);
+        $this->setYMax($this->getYMax() + $cste);
+
+/*
+        $centreX = ($this->getXMax() - $this->getXMin()) / 2;
+        $centreY = ($this->getYMax() - $this->getYMin()) / 2;
+        
+        $this->setXMin($centreY / 2 - $centreX);
+        $this->setXMax($centreY / 2 + $centreX);
+
+        $this->setYMin($centreX / 2 - $centreY);
+        $this->setYMax($centreX / 2 + $centreY);
+*/
+
+
+        
+        return true;
+	}
+
+	//shoot
+	public function shoot(array $shoot)
+	{
+		//TODO
 	}
 
 	//PRIVATE METHOD
@@ -103,59 +182,50 @@ class Ship implements IShip
 		else
 			$this->setStill(true);
 
-        if (array_key_exists("xmin", $kw_arg))
-            $this->setXMin($kw_arg["xmin"]);
+		if (array_key_exists("xmin", $kw_arg))
+			$this->setXMin($kw_arg["xmin"]);
 		else
 			$this->setXMin(0);
 
-        if (array_key_exists("ymin", $kw_arg))
-            $this->setYMin($kw_arg["ymin"]);
+		if (array_key_exists("ymin", $kw_arg))
+			$this->setYMin($kw_arg["ymin"]);
 		else
 			$this->setYMin(0);
 
-        if (array_key_exists("xmax", $kw_arg))
-            $this->setXMax($kw_arg["xmax"]);
+		if (array_key_exists("xmax", $kw_arg))
+			$this->setXMax($kw_arg["xmax"]);
 		else
 			$this->setXMax(0);
 
-        if (array_key_exists("ymax", $kw_arg))
-            $this->setYMax($kw_arg["ymax"]);
+		if (array_key_exists("ymax", $kw_arg))
+			$this->setYMax($kw_arg["ymax"]);
 		else
 			$this->setYMax(0);
-}
 
-	//order
-	private function _order(array $order)
-	{
-		if (array_key_exists("repair", $order))
-			$this->setPc($order["repair"] * $this->roll()); //be sure it's still
-
-		if (array_key_exists("shield", $order))
-			$this->setBonusShield($order["shield"]);
-
-		if (array_key_exists("speed", $order))
-			$this->setBonusSpeed($$order["speed"] * $this->roll());
-
-		if (array_key_exists("shoot", $order))
-			$this->setBonusShoot($order["shoot"] * $this->roll());
-
-		return true;
-	}
-
-	//move
-	private function _move(array $move)
-	{
-		//TODO
-	}
-	private function _bend($way) //TODO: edit w/h
-	{
-		//TODO
-	}
-
-	//shoot
-	private function _shoot(array $shoot)
-	{
-		//TODO
+		if (array_key_exists("way", $kw_arg))
+        {
+			$this->setWay($kw_arg["way"]);
+            switch ($kw_arg["way"])
+            {
+            case "right":
+            $this->setSprite($this->getSpriteRight());
+                break;
+            case "left":
+            $this->setSprite($this->getSpriteLeft());
+                break;
+            case "down":
+            $this->setSprite($this->getSpriteDown());
+                break;
+            case "up":
+            $this->setSprite($this->getSpriteUp());
+                break;
+            }
+        }
+		else
+        {
+			$this->setWay("right");
+            $this->setSprite($this->getSpriteRight());
+        }
 	}
 
 	//GET
@@ -178,6 +248,10 @@ class Ship implements IShip
 	public function getSpriteRight()
 	{
 		return $this->_spriteRight;
+	}
+	public function getSprite()
+	{
+		return $this->_sprite;
 	}
 	public function getPc()
 	{
@@ -227,6 +301,10 @@ class Ship implements IShip
 	{
 		return $this->_yMax;
 	}
+	public function getWay()
+	{
+		return $this->_way;
+	}
 
 	//SET
 	public function setName($name)
@@ -248,6 +326,10 @@ class Ship implements IShip
 	public function setSpriteRight($sprite)
 	{
 		$this->_spriteRight = $sprite;
+	}
+	public function setSprite($sprite)
+	{
+		$this->_sprite = $sprite;
 	}
 	public function setPc($pc)
 	{
@@ -291,21 +373,24 @@ class Ship implements IShip
 	}
 	public function setXMin($x)
 	{
-		$this->_xMin = $x;
+		$this->_xMin = intval($x);
 	}
 	public function setYMin($y)
 	{
-		$this->_yMin = $y;
+		$this->_yMin = intval($y);
 	}
 	public function setXMax($x)
 	{
-		$this->_xMax = $x;
+		$this->_xMax = intval($x);
 	}
 	public function setYMax($y)
 	{
-		$this->_yMax = $y;
+		$this->_yMax = intval($y);
 	}
-
+	public function setWay($way)
+	{
+		$this->_way = $way;
+	}
 
 }
 
