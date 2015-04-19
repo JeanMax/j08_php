@@ -9,6 +9,8 @@ class Zone implements IZone
 	private $_width;
     private $_height;
     private $_map; //array
+	private $_p1;
+	private $_p2;
 
 	public static $verbose = false;
 
@@ -19,17 +21,29 @@ class Zone implements IZone
 			$this->setWidth($kw_arg["width"]);
 		else
 			$this->setWidth(150);
-		if (array_key_exists("height", $kw_arg))
+
+        if (array_key_exists("height", $kw_arg))
 			$this->setHeight($kw_arg["height"]);
 		else
 			$this->setHeight(100);
-		if (array_key_exists("obstacle", $kw_arg))
+
+        if (array_key_exists("obstacle", $kw_arg))
 			$this->setMap($this->getHeight(), $this->getWidth(), $kw_arg["obstacle"]);
 		else
 			$this->setMap($this->getHeight(), $this->getWidth(), array());
 
+        if (array_key_exists("p1", $kw_arg))
+			$this->setP1($kw_arg["p1"]);
+		else
+			$this->setP1(null);
+
+        if (array_key_exists("p2", $kw_arg))
+			$this->setP2($kw_arg["p2"]);
+		else
+			$this->setP2(null);
+
 		if (self::$verbose)
-			-echo "Zone constructed.".PHP_EOL;
+			echo "Zone constructed.".PHP_EOL;
 	}
 
 	public function __destruct()
@@ -72,6 +86,14 @@ class Zone implements IZone
 	{
 		$this->_height = $arg;
 	}
+	public function setP1($p)
+	{
+		$this->_p1 = $p;
+	}
+	public function setP2($p)
+	{
+		$this->_p2 = $p;
+	}
 
 	//GET
 	public function getMap()
@@ -85,6 +107,14 @@ class Zone implements IZone
 	public function getHeight()
 	{
 		return $this->_height;
+	}
+	public function getP1()
+	{
+		return $this->_p1;
+	}
+	public function getP2()
+	{
+		return $this->_p2;
 	}
 }
 
