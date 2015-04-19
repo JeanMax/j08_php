@@ -67,9 +67,38 @@ class Ship implements IShip
 	}
 
 	//move
-	public function move($length)
+    public function moves(array $moves)
+    {
+        //TODO
+//        Array ( [maneuvre_free] => none [pp_speed] => Array ( [1] => 3 [2] => [3] => ) [maneuvre] => Array ( [1] => none [2] => none [3] => none ) )
+        if (array_key_exists("maneuvre_free", $moves) && $moves["maneuvre_free"] != null && $moves["maneuvre_free"] != "")
+            rotate($moves["maneuvre_free"]);
+
+        
+        
+    }
+	public function move($length, $zone)
 	{
-		//TODO
+        switch ($this->_way)
+        {
+        case "left":
+            $ret = $zone->MoveLeft($length, $this);
+            break;
+            
+        case "right":
+            $ret = $zone->MoveRight($length, $this);
+            break;
+            
+        case "up":
+            $ret = $zone->MoveTop($length, $this);
+            break;
+            
+        case "down":
+            $ret = $zone->MoveBottom($length, $this);
+            break;
+        }
+
+        return $ret;
 	}
 	public function rotate($way)
 	{
@@ -120,6 +149,7 @@ class Ship implements IShip
 	//shoot
 	public function shoot()
 	{
+//        array()
 		//TODO
 	}
 

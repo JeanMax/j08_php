@@ -7,7 +7,7 @@
 
 	 <?php
 
-	 require_once("Player.class.php");
+require_once("Player.class.php");
 require_once("Zone.class.php");
 require_once("ExempleGun.class.php");
 require_once("ExempleShip.class.php");
@@ -40,6 +40,11 @@ function init()
 	$s3->setYMin(20);
 	$s3->setYMax(24);
 
+    $s4->setXMin(40);
+    $s4->setXMax(50);
+	$s4->setYMin(20);
+	$s4->setYMax(24);
+
 /*
 	echo "<pre>";
 	print_r ($s3->getXMin().PHP_EOL);
@@ -66,7 +71,17 @@ function init()
 
 	$z = new zone(array("p1" => $p1,
 						"p2" => $p2));
-	$z->aff_map();
+
+
+    echo "<pre>";
+	$s3->rotate("left");
+	$s3->rotate("left");
+    print_r($s3->move(10, $z));
+    $p2->isAlive();
+    $p1->isAlive();
+    print_r($p2);
+    echo "</pre>";
+    $z->aff_map();
 
 	//TODO: SAVE $z TO BDD
 }

@@ -6,14 +6,9 @@ class Zone implements IZone
 {
 	private $_width;
     private $_height;
-    private $_map; //array
 	private $_p1;
 	private $_p2;
-	private $_Xmin;
-	private $_Xmax;
-	private $_Ymin;
-	private $_Ymax;
-
+    private $_obstacles;
 
 	public static $verbose = false;
 
@@ -30,11 +25,6 @@ class Zone implements IZone
 		else
 			$this->setHeight(100);
 
-		if (array_key_exists("obstacle", $kw_arg))
-			$this->setMap($this->getHeight(), $this->getWidth(), $kw_arg["obstacle"]);
-		else
-			$this->setMap($this->getHeight(), $this->getWidth(), array());
-
 		if (array_key_exists("p1", $kw_arg))
 			$this->setP1($kw_arg["p1"]);
 		else
@@ -44,6 +34,11 @@ class Zone implements IZone
 			$this->setP2($kw_arg["p2"]);
 		else
 			$this->setP2(null);
+
+		$this->setObstacles(array(array("Xmin" => 110, "Xmax" => 119, "Ymin" => 60, "Ymax" => 69),
+									array("Xmin" => 30, "Xmax" => 39, "Ymin" => 20, "Ymax" => 29),
+									array("Xmin" => 50, "Xmax" => 59, "Ymin" => 60, "Ymax" => 69),
+									array("Xmin" => 80, "Xmax" => 89, "Ymin" => 30, "Ymax" => 39)));
 
 		if (self::$verbose)
 			echo "Zone constructed.".PHP_EOL;
@@ -55,18 +50,7 @@ class Zone implements IZone
 			echo "Zone destructed.".PHP_EOL;
 	}
 
-
 	//PUBLIC
-	public function canMoveMap($move, $indShip, $Player)
-	{
-		if ($Player == 1)
-		{
-		}
-		else
-		{
-		}
-	}
-
 	public	 function aff_map()
 	{
 		echo '<table>';
@@ -76,22 +60,28 @@ class Zone implements IZone
 
 		foreach($p1Ships as $ship)
 		{
-			$X = 12 * $ship->getXMin();
-			$Y = 12 * $ship->getYMin();
-			$SX = 12 * ($ship->getXMax() - $ship->getXMin() + 1) - 1;
-			$SY = 12 * ($ship->getYMax() - $ship->getYMin() + 1) - 1;
+			if ($ship->getPc() > 0)
+			{
+				$X = 12 * $ship->getXMin();
+				$Y = 12 * $ship->getYMin();
+				$SX = 12 * ($ship->getXMax() - $ship->getXMin() + 1) - 1;
+				$SY = 12 * ($ship->getYMax() - $ship->getYMin() + 1) - 1;
 
-			echo '<img src= '.$ship->getSprite().' style="background-color:red; left:'.$X.'px; top:'.$Y.'px; width:'.$SX.'px;height:'.$SY.'px;" alt="Vaisse11" class="vais">';
+				echo '<img src= '.$ship->getSprite().' style="background-color:red; left:'.$X.'px; top:'.$Y.'px; width:'.$SX.'px;height:'.$SY.'px;" alt="Vaisse11" class="vais">';
+			}
 		}
 
 		foreach($p2Ships as $ship2)
 		{
-			$X = 12 * $ship2->getXMin();
-			$Y = 12 * $ship2->getYMin();
-			$SX = 12 * ($ship2->getXMax() - $ship2->getXMin() + 1) - 1;
-			$SY = 12 * ($ship2->getYMax() - $ship2->getYMin() + 1) - 1;
+			if ($ship2->getPc() > 0)
+			{
+				$X = 12 * $ship2->getXMin();
+				$Y = 12 * $ship2->getYMin();
+				$SX = 12 * ($ship2->getXMax() - $ship2->getXMin() + 1) - 1;
+				$SY = 12 * ($ship2->getYMax() - $ship2->getYMin() + 1) - 1;
 
-			echo '<img src= '.$ship2->getSprite().' style="background-color:blue; left:'.$X.'px; top:'.$Y.'px; width:'.$SX.'px;height:'.$SY.'px;" alt="Vaisse11" class="vais">';
+				echo '<img src= '.$ship2->getSprite().' style="background-color:blue; left:'.$X.'px; top:'.$Y.'px; width:'.$SX.'px;height:'.$SY.'px;" alt="Vaisse11" class="vais">';
+			}
 		}
 
 		echo '<img src="img/asteroidBig01.png" alt="asteroid" class="asteroid">';
@@ -117,107 +107,104 @@ class Zone implements IZone
 	}
 
 	//PRIVATE
-	private function InitPos($Player, $indShip)
+	public function MoveLeft($length, $ship)
 	{
-		if ($Player == 1)
+		$posend = $ship->getXMin() - $length;
+		$xmin = $ship->getXMin();
+		$xmax = $ship->getXMax();
+		while ($xmin > $posend)
 		{
-			$this->_Xmin = $this->_p1->getShips()[$indShip]->getXmin();
-			$this->_Xmax = $this->_p1->getShips()[$indShip]->getXmax();
-			$this->_Ymin = $this->_p1->getShips()[$indShip]->getYmin();
-			$this->_Ymax = $this->_p1->getShips()[$indShip]->getYmax();
-		}
-		else
-		{
-			$this->_Xmin = $this->_p2->getShips()[$indShip]->getXmin();
-			$this->_Xmax = $this->_p2->getShips()[$indShip]->getXmax();
-			$this->_Ymin = $this->_p2->getShips()[$indShip]->getYmin();
-			$this->_Ymax = $this->_p2->getShips()[$indShip]->getYmax();
-		}
-
-	}
-
-	private function DeleteShip($Player, $indShip)
-	{
-		if ($Player == 1)
-			$this->_p1->setShips($this->_p1->getShips()[$indShip]->setPc(0));
-		else
-			$this->_p2->setShips($this->_p2->getShips()[$indShip]->setPc(0));
-		return -1;
-	}
-
-	private function MoveLeft($move, $indShip, $Player)
-	{
-		$this->InitPos($Player, $indShip);
-		$posend = $this->_Xmin - $move;
-		while ($this->_Xmin > $posend)
-		{
-			$this->_Xmin--;
-			if ($this->Xmin == -1)
-				return $this->DeleteShip($Player, $indShip);
-			if ($this->CheckObs($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
-				return $this->DeleteShip($Player, $indShip);
-			if ($this->CheckShip($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
+			$xmin--;
+			$xmax--;
+			if ($xmin == -1 ||
+				$this->CheckObs($xmax, $xmin, $ship->getYMax(), $ship->getYMin()) == false)
+			{
+				$ship->setPc(0);
+				return -1;
+			}
+			if ($this->CheckShips($xmax, $xmin, $ship->getYMax(), $ship->getYMin(), $ship) == false)
 				return -2;
 		}
+		$ship->setXMin($xmin);
+		$ship->setXMax($xmax);
 		return true;
 	}
 
-	private function MoveRight($move, $indShip, $Player)
-    {
-        $this->InitPos($Player, $indShip);
-        $posend = $this->_Xmax + $move;
-        while ($this->_Xmax < $posend)
-        {
-            $this->_Xmax++;
-            if ($this->Xmax == 150)
-                return $this->DeleteShip($Player, $indShip);
-            if ($this->CheckObs($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
-                return $this->DeleteShip($Player, $indShip);
-            if ($this->CheckShip($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
-                return -2;
-        }
-        return true;
-    }
-
-	private function MoveTop($move, $indShip, $Player)
-    {
-        $this->InitPos($Player, $indShip);
-        $posend = $this->_Ymin - $move;
-        while ($this->_Ymin > $posend)
-        {
-            $this->_Ymin--;
-            if ($this->Ymin == -1)
-                return $this->DeleteShip($Player, $indShip);
-            if ($this->CheckObs($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
-                return $this->DeleteShip($Player, $indShip);
-            if ($this->CheckShip($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
-                return -2;
-        }
-        return true;
-    }
-	
-	private function MoveBottom($move, $indShip, $Player)
-    {
-		$this->InitPos($Player, $indShip);
-        $posend = $this->_Ymax + $move;
-        while ($this->_Ymax < $posend)
-        {
-            $this->_Ymax++;
-            if ($this->Ymax == 150)
-                return $this->DeleteShip($Player, $indShip, $Vue);
-            if ($this->CheckObs($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
-                return $this->DeleteShip($Player, $indShip, $Vue);
-            if ($this->CheckShip($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
-                return -2;
-        }
-        return true;
-    }
-
-	private function CheckObs($Xmax, $Xmin, $Ymax, $Ymin)
+	public function MoveRight($length, $ship)
 	{
-		foreach($this->_obstacles as $obs)
+		$posend = $ship->getXMax() + $length;
+		$xmin = $ship->getXMin();
+		$xmax = $ship->getXMax();
+		while ($xmax < $posend)
 		{
-			if ($Xmin <= $obs['Xmax'] || $Xmax >= $obs['Xmin'])
+			$xmax++;
+			$xmin++;
+			if ($xmax == $this->getWidth() ||
+				$this->CheckObs($xmax, $xmin, $ship->getYMax(), $ship->getYMin()) == false)
+			{
+				$ship->setPc(0);
+				return -1;
+			}
+			if ($this->CheckShips($xmax, $xmin, $ship->getYMax(), $ship->getYMin(), $ship) == false)
+				return -2;
+		}
+
+		$ship->setXMin($xmin);
+		$ship->setXMax($xmax);
+		return 0;
+	}
+
+	public function MoveTop($length, $ship)
+	{
+		$posend = $ship->getYMin() - $length;
+		$ymin = $ship->getYMin();
+		$ymax = $ship->getYMax();
+		while ($ymin > $posend)
+		{
+			$ymin--;
+			$ymax--;
+			if ($ymin == -1
+				|| $this->CheckObs($ship->getXMax(), $ship->getXMin(), $ymax, $ymin) == false)
+			{
+				$ship->setPc(0);
+				return -1;
+			}
+			if ($this->CheckShips($ship->getXMax(), $ship->getXMin(), $ymax, $ymin, $ship) == false)
+				return -2;
+		}
+		$ship->setYMin($ymin);
+		$ship->setYMax($ymax);
+		return true;
+	}
+
+	public function MoveBottom($length, $ship)
+	{
+		$posend = $ship->getYMax() + $length;
+		$ymin = $ship->getYMin();
+		$ymax = $ship->getYMax();
+		while ($ymax < $posend)
+		{
+			$ymax++;
+			$ymin++;
+			if ($ymax == $this->getHeight() ||
+				$this->CheckObs($ship->getXMax(), $ship->getXMin(), $ymax, $ymin) == false)
+			{
+				$ship->setPc(0);
+				return -1;
+			}
+			if ($this->CheckShips($ship->getXMax(), $ship->getXMin(), $ymax, $ymin, $ship) == false)
+				return -2;
+		}
+		$ship->setYMin($ymin);
+		$ship->setYMax($ymax);
+		return true;
+	}
+
+	public function CheckObs($Xmax, $Xmin, $Ymax, $Ymin)
+	{
+		foreach ($this->_obstacles as $obs)
+		{
+			if (($Xmin <= $obs['Xmax'] && $Xmin >= $obs['Xmin']) || ($Xmax >= $obs['Xmin'] && $Xmax <= $obs['Xmax']))
 			{
 				if ($Ymax - $Ymin >= $obs['Ymax'] - $obs['Ymin'])
 				{
@@ -228,104 +215,132 @@ class Zone implements IZone
 					if (($Ymin >= $obs['Ymin'] && $Ymin <= $obs['Ymax']) || ($Ymax >= $obs['Ymin'] && $Ymax <= $obs['Ymax']))
 						return false;
 			}
-			if ($Ymin <= $obs['Ymax'] || $Ymax >= $obs['Ymin'])
-            {
-                if ($Xmax - $Xmin >= $obs['Xmax'] - $obs['Xmin'])
-                {
-                    if (($obs['Xmin'] >= $Xmin && $obs['Xmin'] <= $Xmax) || ($obs['Xmax'] >= $Xmin && $obs['Xmax'] <= $Xmax))
-                        return false;
-                }
-                else
-                    if (($Xmin >= $obs['Xmin'] && $Xmin <= $obs['Xmax']) || ($Xmax >= $obs['Xmin'] && $Xmax <= $obs['Xmax']))
-                        return false;
-            }
+			if (($Ymin <= $obs['Ymax'] && $Ymin >= $obs['Ymin']) || ($Ymax >= $obs['Ymin'] && $Ymax <= $obs['Ymax']))
+			{
+				if ($Xmax - $Xmin >= $obs['Xmax'] - $obs['Xmin'])
+				{
+					if (($obs['Xmin'] >= $Xmin && $obs['Xmin'] <= $Xmax) || ($obs['Xmax'] >= $Xmin && $obs['Xmax'] <= $Xmax))
+						return false;
+				}
+				else
+					if (($Xmin >= $obs['Xmin'] && $Xmin <= $obs['Xmax']) || ($Xmax >= $obs['Xmin'] && $Xmax <= $obs['Xmax']))
+						return false;
+			}
 		}
 		return true;
 	}
-	
-	private function CheckShips($Xmax, $Xmin, $Ymax, $Ymin)
-    {
-		$ships = $this->_p1->getShips();
-        foreach($ships as $sps)
-        {
-            if ($Xmin <= $sps->getXmax() || $Xmax >= $sps->getXmin())
-            {
-                if ($Ymax - $Ymin >= $sps->getYmax() - $sps->getYmin())
-                {
-                    if (($sps->getYmin() >= $Ymin && $sps->getYmin() <= $Ymax) || ($sps->getYmax() >= $Ymin && $sps->getYmax() <= $Ymax))
-                        return false;
-                }
-                else
-                    if (($Ymin >= $sps->getYmin() && $Ymin <= $sps->getYmax()) || ($Ymax >= $sps->getYmin() && $Ymax <= $sps->getYmax()))
-                        return false;
-            }
-            if ($Ymin <= $sps->getYmax() || $Ymax >= $sps->getYmin())
-            {
-                if ($Xmax - $Xmin >= $sps->getXmax() - $sps->getXmin())
-                {
-                    if (($sps->getXmin() >= $Xmin && $sps->getXmin() <= $Xmax) || ($sps->getXmax() >= $Xmin && $sps->getXmax() <= $Xmax))
-                        return false;
-                }
-                else
-                    if (($Xmin >= $sps->getXmin() && $Xmin <= $sps->getXmax()) || ($Xmax >= $sps->getXmin() && $Xmax <= $sps->getXmax()))
-                        return false;
-            }
-        }
-		$ships = $this->_p2->getShips();
-		foreach($ships as $sps)
-        {
-            if ($Xmin <= $sps->getXmax() || $Xmax >= $sps->getXmin())
-            {
-                if ($Ymax - $Ymin >= $sps->getYmax() - $sps->getYmin())
-                {
-                    if (($sps->getYmin() >= $Ymin && $sps->getYmin() <= $Ymax) || ($sps->getYmax() >= $Ymin && $sps->getYmax() <= $Ymax))
-                        return false;
-                }
-                else
-                    if (($Ymin >= $sps->getYmin() && $Ymin <= $sps->getYmax()) || ($Ymax >= $sps->getYmin() && $Ymax <= $sps->getYmax()))
-                        return false;
-            }
-            if ($Ymin <= $sps->getYmax() || $Ymax >= $sps->getYmin())
-            {
-                if ($Xmax - $Xmin >= $sps->getXmax() - $sps->getXmin())
-                {
-                    if (($sps->getXmin() >= $Xmin && $sps->getXmin() <= $Xmax) || ($sps->getXmax() >= $Xmin && $sps->getXmax() <= $Xmax))
-                        return false;
-                }
-                else
-                    if (($Xmin >= $sps->getXmin() && $Xmin <= $sps->getXmax()) || ($Xmax >= $sps->getXmin() && $Xmax <= $sps->getXmax()))
-                        return false;
-            }
-        }
-        return true;
-    }
 
-	//SET
-	public function init_obstacle($obs)
+	private function CheckShips($Xmax, $Xmin, $Ymax, $Ymin, $ship)
 	{
-		foreach ($obs as $key => $value)
-			$this->_map[$value][$key] = 2;
-	}
-	public function setMap($h, $w, $obs)
-	{
-		$this->_map = array();
-		$this->i = 0;
-		while ($this->i <= $h + 1)
+		$ships = $this->_p1->getShips();
+		foreach ($ships as $sps)
 		{
-			$this->j = 0;
-			$this->_map[$this->i] = array();
-			while ($this->j <= $w + 1)
+			if ((($Xmin <= $sps->getXmax() && $Xmin >= $sps->getXmin()) || ($Xmax >= $sps->getXmin() && $Xmax <= $sps->getXmax())) && $sps !== $ship && $sps->getPc() > 0)
 			{
-				if ($this->i == 0 || $this->i == $h + 1 || $this->j == 0 || $this->j == $w + 1)
-					$this->_map[$this->i][$this->j] = 1;
-				else
-					$this->_map[$this->i][$this->j] = 0;
-				$this->j++;
+				if ($Ymax - $Ymin >= $sps->getYmax() - $sps->getYmin())
+				{
+					if (($sps->getYmin() >= $Ymin && $sps->getYmin() <= $Ymax) || ($sps->getYmax() >= $Ymin && $sps->getYmax() <= $Ymax))
+					{
+						$this->damageIt($ship, $sps, $Xmax, $Xmin, $Ymax, $Ymin);
+						return false;
+					}
+					else if (($Ymin >= $sps->getYmin() && $Ymin <= $sps->getYmax()) || ($Ymax >= $sps->getYmin() && $Ymax <= $sps->getYmax()))
+					{
+						$this->damageIt($ship, $sps, $Xmax, $Xmin, $Ymax, $Ymin);
+						return false;
+					}
+				}
 			}
-			$this->i++;
+			if ((($Ymin <= $sps->getYmax() && $Ymin >= $sps->getYmin()) || ($Ymax >= $sps->getYmin() && $Ymax <= $sps->getYmax())) && $sps !== $ship && $sps->getPc() > 0)
+			{
+				if ($Xmax - $Xmin >= $sps->getXmax() - $sps->getXmin())
+				{
+					if (($sps->getXmin() >= $Xmin && $sps->getXmin() <= $Xmax) || ($sps->getXmax() >= $Xmin && $sps->getXmax() <= $Xmax))
+					{
+						$this->damageIt($ship, $sps, $Xmax, $Xmin, $Ymax, $Ymin);
+						return false;
+					}
+				}
+				else if (($Xmin >= $sps->getXmin() && $Xmin <= $sps->getXmax()) || ($Xmax >= $sps->getXmin() && $Xmax <= $sps->getXmax()))
+				{
+					$this->damageIt($ship, $sps, $Xmax, $Xmin, $Ymax, $Ymin);
+					return false;
+				}
+			}
 		}
-		$this->init_obstacle($obs);
+
+		$ships = $this->_p2->getShips();
+		foreach ($ships as $sps)
+		{
+			if ((($Xmin <= $sps->getXmax() && $Xmin >= $sps->getXmin()) || ($Xmax >= $sps->getXmin() && $Xmax <= $sps->getXmax())) && $sps !== $ship && $sps->getPc() > 0)
+			{
+				if ($Ymax - $Ymin >= $sps->getYmax() - $sps->getYmin())
+				{
+					if (($sps->getYmin() >= $Ymin && $sps->getYmin() <= $Ymax) || ($sps->getYmax() >= $Ymin && $sps->getYmax() <= $Ymax))
+					{
+						$this->damageIt($ship, $sps, $Xmax, $Xmin, $Ymax, $Ymin);
+						return false;
+					}
+					else if (($Ymin >= $sps->getYmin() && $Ymin <= $sps->getYmax()) || ($Ymax >= $sps->getYmin() && $Ymax <= $sps->getYmax()))
+					{
+						$this->damageIt($ship, $sps, $Xmax, $Xmin, $Ymax, $Ymin);
+						return false;
+					}
+				}
+			}
+			if ((($Ymin <= $sps->getYmax() && $Ymin >= $sps->getYmin()) || ($Ymax >= $sps->getYmin() && $Ymax <= $sps->getYmax())) && $sps !== $ship && $sps->getPc() > 0)
+			{
+				if ($Xmax - $Xmin >= $sps->getXmax() - $sps->getXmin())
+				{
+					if (($sps->getXmin() >= $Xmin && $sps->getXmin() <= $Xmax) || ($sps->getXmax() >= $Xmin && $sps->getXmax() <= $Xmax))
+					{
+						$this->damageIt($ship, $sps, $Xmax, $Xmin, $Ymax, $Ymin);
+						return false;
+					}
+				}
+				else if (($Xmin >= $sps->getXmin() && $Xmin <= $sps->getXmax()) || ($Xmax >= $sps->getXmin() && $Xmax <= $sps->getXmax()))
+				{
+					$this->damageIt($ship, $sps, $Xmax, $Xmin, $Ymax, $Ymin);
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
+
+	private function damageIt($ship1, $ship2, $Xmax, $Xmin, $Ymax, $Ymin)
+	{
+        $pc1 = $ship1->getPc();
+		$ship1->setPc($pc1 + $ship1->getBonusShield() - $ship2->getPc());
+		$ship2->setPc($ship2->getPc() + $ship2->getBonusShield() - $pc1);
+
+		switch ($ship1->getWay())
+		{
+		case "left":
+			$ship1->setXMin($Xmin + 1);
+			$ship1->setXMax($Xmax + 1);
+			break ;
+
+		case "right":
+			$ship1->setXMin($Xmin - 1);
+			$ship1->setXMax($Xmax - 1);
+			break ;
+
+		case "up":
+			$ship1->setYMin($Ymin + 1);
+			$ship1->setYMax($Ymax + 1);
+			break ;
+
+		case "down":
+			$ship1->setYMin($Ymin - 1);
+			$ship1->setYMax($Ymax - 1);
+			break ;
+		}
+
+	}
+
+//SET
 	public function setWidth($arg)
 	{
 		$this->_width = $arg;
@@ -342,8 +357,12 @@ class Zone implements IZone
 	{
 		$this->_p2 = $p;
 	}
+	public function setObstacles(array $o)
+	{
+		return $this->_obstacles = $o;
+	}
 
-	//GET
+//GET
 	public function getMap()
 	{
 		return $this->_map;
@@ -363,6 +382,10 @@ class Zone implements IZone
 	public function getP2()
 	{
 		return $this->_p2;
+	}
+	public function getObstacles()
+	{
+		return $this->_obstacles;
 	}
 }
 

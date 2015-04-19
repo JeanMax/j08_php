@@ -25,7 +25,6 @@ class Player implements IPlayer
 	}
 
 	//PUBLIC METHOD
-
 	public function isAlive() // /!\ will clear temp states (activated, bonus...)
 	{
 		$ships = $this->getShips();
@@ -37,7 +36,7 @@ class Player implements IPlayer
             $ship->setBonusSpeed(0);
             $ship->setBonusShoot(0);
 			if ($ship->getPc() <= 0)
-				unset($ships[$key]); //cleaning dead ship
+				unset($ships[$key]); //cleaning dead ship //bjorked
 		}
 
 		if (count($this->getShips()) == 0)
@@ -66,6 +65,7 @@ class Player implements IPlayer
 		foreach ($ships as $ship)
 			array_push($this->_ships, $ship);
 	}
+    
 
 }
 
