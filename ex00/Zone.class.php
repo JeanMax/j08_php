@@ -4,8 +4,10 @@ require_once('IZone.class.php');
 
 class Zone implements IZone
 {
+    /*
 	public $i = 0;
 	public $j = 0;
+    */
 	private $_width;
     private $_height;
     private $_map; //array

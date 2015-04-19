@@ -6,7 +6,10 @@ require_once("IShip.class.php");
 class Ship implements IShip
 {
     private $_name;
-    private $_sprite;
+    private $_spriteUp;
+    private $_spriteDown;
+    private $_spriteLeft;
+    private $_spriteRight;
 	private $_pc; //point de coque
 	private $_pp; //point moteur
 	private $_speed;
@@ -63,7 +66,10 @@ class Ship implements IShip
 
 		//needed
 		$this->setName($kw_arg["name"]);
-		$this->setSprite($kw_arg["sprite"]);
+		$this->setSpriteUp($kw_arg["spriteup"]);
+		$this->setSpriteDown($kw_arg["spritedown"]);
+		$this->setSpriteLeft($kw_arg["spriteleft"]);
+		$this->setSpriteRight($kw_arg["spriteright"]);
 		$this->setGun($kw_arg["gun"]);
 
 		//optionnal
@@ -157,9 +163,21 @@ class Ship implements IShip
 	{
 		return $this->_name;
 	}
-	public function getSprite()
+	public function getSpriteUp()
 	{
-		return $this->_sprite;
+		return $this->_spriteUp;
+	}
+	public function getSpriteDown()
+	{
+		return $this->_spriteDown;
+	}
+	public function getSpriteLeft()
+	{
+		return $this->_spriteLeft;
+	}
+	public function getSpriteRight()
+	{
+		return $this->_spriteRight;
 	}
 	public function getPc()
 	{
@@ -215,9 +233,21 @@ class Ship implements IShip
 	{
 		$this->_name = $name;
 	}
-	public function setSprite($sprite)
+	public function setSpriteUp($sprite)
 	{
-		$this->_sprite = $sprite;
+		$this->_spriteUp = $sprite;
+	}
+	public function setSpriteDown($sprite)
+	{
+		$this->_spriteDown = $sprite;
+	}
+	public function setSpriteLeft($sprite)
+	{
+		$this->_spriteLeft = $sprite;
+	}
+	public function setSpriteRight($sprite)
+	{
+		$this->_spriteRight = $sprite;
 	}
 	public function setPc($pc)
 	{

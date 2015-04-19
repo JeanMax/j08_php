@@ -9,7 +9,10 @@ class ExempleShip extends Ship
 	public function __construct()
 	{
 		$this->init(array("name" => "Zboub",
-						   "sprite" => "img/vaisseau_mere.png",
+						   "spriteup" => "img/vaisseau_mere.png",
+						   "spritedown" => "img/vaisseau_mere.png",
+						   "spriteleft" => "img/vaisseau_mere.png",
+						   "spriteright" => "img/vaisseau_mere.png",
 						   "gun" => New ExempleGun(),
                            "xmin" => 10,
                            "ymin" => 10,
