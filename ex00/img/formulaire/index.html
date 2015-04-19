@@ -1,0 +1,28 @@
+<html>
+<head>
+<style> .case { width:5px; height:5px; border: 1px solid black;border-collapse: collapse;} </style>
+</head>
+<body>
+
+<p> hello</p>
+	<?php
+	   $i = 0;
+	   $j = 0;
+echo "<table>";
+	   while ($i < 100)
+		{
+			   echo "<tr>";
+				$j = 0;
+			while ($j < 150)
+			{
+				echo '<td> class=\"case\"> </td> ';
+				$j++;
+			}
+			echo "</tr>";
+			$i++;
+		}
+print('</table>');
+?>
+
+</body>
+</html>

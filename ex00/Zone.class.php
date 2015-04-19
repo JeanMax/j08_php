@@ -6,8 +6,8 @@ class Zone implements IZone
 {
 	private $_width;
     private $_height;
-	private $_p1;
-	private $_p2;
+	public $_p1;
+	public $_p2;
     private $_obstacles;
 
 	public static $verbose = false;
@@ -51,7 +51,7 @@ class Zone implements IZone
 	}
 
 	//PUBLIC
-	public	 function aff_map()
+	public	 function aff_map($player)
 	{
 		echo '<table>';
 
@@ -66,9 +66,12 @@ class Zone implements IZone
 				$Y = 12 * $ship->getYMin();
 				$SX = 12 * ($ship->getXMax() - $ship->getXMin() + 1) - 1;
 				$SY = 12 * ($ship->getYMax() - $ship->getYMin() + 1) - 1;
-
+                if($ship->getActivated() == false && $player == 1)
+                    echo '<a href="http://demo.local.42.fr:8080/j08_php/ex00/main.php?id=' . $ship->getName() . '&joueur=1">';
 				echo '<img src= '.$ship->getSprite().' style="background-color:red; left:'.$X.'px; top:'.$Y.'px; width:'.$SX.'px;height:'.$SY.'px;" alt="Vaisse11" class="vais">';
-			}
+                if($ship->getActivated() == false && $player == 1)
+                    echo '</a>';
+            }
 		}
 
 		foreach($p2Ships as $ship2)
@@ -79,9 +82,12 @@ class Zone implements IZone
 				$Y = 12 * $ship2->getYMin();
 				$SX = 12 * ($ship2->getXMax() - $ship2->getXMin() + 1) - 1;
 				$SY = 12 * ($ship2->getYMax() - $ship2->getYMin() + 1) - 1;
-
+                if($ship2->getActivated() == false && $player == 2)
+                    echo '<a href="http://demo.local.42.fr:8080/j08_php/ex00/main.php?id=' . $ship2->getName() . '&joueur=2">';
 				echo '<img src= '.$ship2->getSprite().' style="background-color:blue; left:'.$X.'px; top:'.$Y.'px; width:'.$SX.'px;height:'.$SY.'px;" alt="Vaisse11" class="vais">';
-			}
+                if($ship2->getActivated() == false && $player == 2)
+                    echo '</a>';
+            }
 		}
 
 		echo '<img src="img/asteroidBig01.png" alt="asteroid" class="asteroid">';
@@ -230,7 +236,90 @@ class Zone implements IZone
 		return true;
 	}
 
-	private function CheckShips($Xmax, $Xmin, $Ymax, $Ymin, $ship)
+    public function LineView($ship, $range)
+    {
+        $ret = 0;
+        
+        switch ($ship->getWay())
+        {
+        case "left":
+            $x = $ship->getXMin();
+            $y = ($ship->getYMax() - $ship->getYMin()) / 2;
+            $stop = $x - $range;
+            for ($x; $x > $stop; $x--)
+            {
+                if ($this->checkObs($x, $x, $y, $y) == false)
+                    $ret++;
+                if ($this->checkShips($x, $x, $y, $y, $ship) == false)
+                    break ;
+            }
+            break ;
+
+        case "right":
+            $x = $ship->getXMax();
+            $y = ($ship->getYMax() - $ship->getYMin()) / 2;
+            $stop = $x + $range;
+            for ($x; $x < $stop; $x++)
+            {
+                if ($this->checkObs($x, $x, $y, $y) == false)
+                    $ret++;
+                if ($this->checkShips($x, $x, $y, $y, $ship) == false)
+                    break ;
+            }
+            break ;
+
+        case "up":
+            $y = $ship->getYMin();
+            $x = ($ship->getXMax() - $ship->getXMin()) / 2;
+            $stop = $y - $range;
+            for ($y; $y > $stop; $y--)
+            {
+                if ($this->checkObs($x, $x, $y, $y) == false)
+                    $ret++;
+                if ($this->checkShips($x, $x, $y, $y, $ship) == false)
+                    break ;
+            }
+            break ;
+
+        case "down":
+            $y = $ship->getYMax();
+            $x = ($ship->getXMax() - $ship->getXMin()) / 2;
+            $stop = $y + $range;
+            for ($y; $y < $stop; $y++)
+            {
+                if ($this->checkObs($x, $x, $y, $y) == false)
+                    $ret++;
+                if ($this->checkShips($x, $x, $y, $y, $ship) == false)
+                    break ;
+            }
+            break ;
+        }
+
+        if ($this->checkShips($x, $x, $y, $y, $ship) == true)
+            return $this->findShip($x, $y);
+        if ($ret == 0)
+            return false;
+        return false;
+    }
+
+    public function findShip($x, $y)
+    {
+        $ships = $this->_p1->getShips();
+        foreach ($ships as $ship)
+            if ($x >= $ship->getXMin() && $x <= $ship->getXMax() &&
+                $y >= $ship->getYMin() && $y <= $ship->getYMax())
+                return $ship;
+
+        $ships = $this->_p2->getShips();
+        foreach ($ships as $ship)
+            if ($x >= $ship->getXMin() && $x <= $ship->getXMax() &&
+                $y >= $ship->getYMin() && $y <= $ship->getYMax())
+                return $ship;
+        
+        return null;
+    }
+    
+	public function CheckShips($Xmax, $Xmin, $Ymax, $Ymin, $ship)
 	{
 		$ships = $this->_p1->getShips();
 		foreach ($ships as $sps)

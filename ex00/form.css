@@ -1,3 +1,15 @@
-body {
-	font-family: verdana;
+
+.formulaire {
+    position:absolute;
+    left:1800px;
+    line-height: 2em;
+    width:400px;
+    height:1200px;
+    background-color:#444444;
+    padding-top:40px;
+    padding-left:40px;
+}
+
+input[type=number] {
+    width:40px;
 }
