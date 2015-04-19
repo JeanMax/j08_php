@@ -61,25 +61,9 @@ class Zone implements IZone
 	{
 		if ($Player == 1)
 		{
-			if ($this->_p1Ships[$indShip]->getSens() == 'up')
-				return $this->MoveYmin($move, $indShip, $Player, $this->_obs);
-			if ($this->_p1Ships[$indShip]->getSens() == 'down')
-				return $this->MoveYmax($move, $indShip, $Player, $this->_obs);
-			if ($this->_p1Ships[$indShip]->getSens() == 'left')
-				return $this->MoveXmin($move, $indShip, $Player, $this->_obs);
-			if ($this->_p1Ships[$indShip]->getSens() == 'right')
-				return $this->MoveXmax($move, $indShip, $Player, $this->_obs);
 		}
 		else
 		{
-			if ($this->_p2Ships[$indShip]->getSens() == 'up')
-				return $this->MoveYmin($move, $indShip, $Player, $this->_obs);
-			if ($this->_p2Ships[$indShip]->getSens() == 'down')
-				return $this->MoveYmax($move, $indShip, $Player, $this->_obs);
-			if ($this->_p2Ships[$indShip]->getSens() == 'left')
-				return $this->MoveXmin($move, $indShip, $Player, $this->_obs);
-			if ($this->_p2Ships[$indShip]->getSens() == 'right')
-				return $this->MoveXmax($move, $indShip, $Player, $this->_obs);
 		}
 	}
 
@@ -135,189 +119,186 @@ class Zone implements IZone
 	//PRIVATE
 	private function InitPos($Player, $indShip)
 	{
-		$_p1Ships = $_p1->getShips();
-		$_p2Ships = $_p2->getShips();
-
 		if ($Player == 1)
 		{
-			$this->Xmin = $this->_p1Ships[$indShip]->getXmin();
-			$this->Xmax = $this->_p1Ships[$indShip]->getXmax();
-			$this->Ymin = $this->_p1Ships[$indShip]->getYmin();
-			$this->Ymax = $this->_p1Ships[$indShip]->getYmax();
+			$this->_Xmin = $this->_p1->getShips()[$indShip]->getXmin();
+			$this->_Xmax = $this->_p1->getShips()[$indShip]->getXmax();
+			$this->_Ymin = $this->_p1->getShips()[$indShip]->getYmin();
+			$this->_Ymax = $this->_p1->getShips()[$indShip]->getYmax();
 		}
 		else
 		{
-			$this->Xmin = $this->_p2Ships[$indShip]->getXmin();
-			$this->Xmax = $this->_p2Ships[$indShip]->getXmax();
-			$this->Ymin = $this->_p2Ships[$indShip]->getYmin();
-			$this->Ymax = $this->_p2Ships[$indShip]->getYmax();
+			$this->_Xmin = $this->_p2->getShips()[$indShip]->getXmin();
+			$this->_Xmax = $this->_p2->getShips()[$indShip]->getXmax();
+			$this->_Ymin = $this->_p2->getShips()[$indShip]->getYmin();
+			$this->_Ymax = $this->_p2->getShips()[$indShip]->getYmax();
 		}
 
 	}
 
-	private function DeleteDamage($Player, $indShip, $Ship, $nature, $case)
-	{
-		if ($nature == "obstacle")
-		{
-			if ($Player == 1)
-				$this->_p1Ships[$indShip]->setPc(0);
-			else
-				$this->_p2Ships[$indShip]->setPc(0);
-		}
-		else
-		{
-			if ($Player == 1 && $case > $this->_p1Ships[$indShip]->getManeuver())
-				$this->_p1Ships[$indShip]->setPc($this->_p1Ships[$indShip]->getPc() + $this->_p1Ships[$indShip]->getBonusShield() - $Ship->getPc());
-			else if ($Player == 2 && $case > $this->_p2Ships[$indShip]->getManeuver())
-				$this->_p2Ships[$indShip]->setPV($this->_p2Ships[$indShip]->getPc() + $this->_p1Ships[$indShip]->getBonusShield() - $Ship->getResist());
-			if ($$Player == 1 && $case > $this->_p1Ships[$indShip]->getManeuver())
-				return ($Ship->getPc() + $Ship->getBonusShield() - $this->_p1Ships[$indShip]->getResist());
-			else if ($Player == 2 && $case > $this->_p2Ships[$indShip]->getManeuver())
-				return ($Ship->getPc() + $Ship->getBonusShield() - $this->_p2Ships[$indShip]->getResist());
-		}
-		return true;
-	}
-
-	private function AddModif($Player, $dirA, $dirB, $indShip, $move)
+	private function DeleteShip($Player, $indShip)
 	{
 		if ($Player == 1)
-		{
-			$this->_p1Ships[$indShip]->setXmin($dirA);
-			$this->_p1Ships[$indShip]->setXmax($dirB);
-		}
+			$this->_p1->setShips($this->_p1->getShips()[$indShip]->setPc(0));
 		else
-		{
-			$this->_p2Ships[$indShip]->setXmin($dirA);
-			$this->_p2Ships[$indShip]->setXmax($dirB);
-		}
+			$this->_p2->setShips($this->_p2->getShips()[$indShip]->setPc(0));
+		return -1;
 	}
 
-	private function MoveXmin($move, $indShip, $Player, $obstacles, $nature)
+	private function MoveLeft($move, $indShip, $Player)
 	{
-		$i = 0;
-		$this->InitPos($player, $indShip);
+		$this->InitPos($Player, $indShip);
 		$posend = $this->_Xmin - $move;
 		while ($this->_Xmin > $posend)
 		{
 			$this->_Xmin--;
 			if ($this->Xmin == -1)
-				return $this->DeleteDamage($Player, $indShip, null, $nature, $i);
-			$i++;
-			foreach($obstacles as $obs)
-			{
-				if ($this->_Xmin <= $obs->getXmax())
-				{
-					if ($this->_Ymax - $this->_Ymin >= $obs->getYmax() - $obs->getYmin())
-					{
-						if (($obs->getYmin() >= $this->_Ymin && $obs->getYmin() <= $this->_Ymax)
-							|| ($obs->getYmax() >= $this->_Ymin && $obs->getYmax() <= $this->_Ymax))
-							return $this->DeleteDamage($Player, $indShip, null, $nature, $i);
-					}
-					else
-						if (($this->_Ymin >= $obs->getYmin() && $this->_Ymin <= $obs->getYmax())
-							|| ($this->_Ymax >= $obs->getYmin() && $this->_Ymax <= $obs->getYmax()))
-							return $this->DeleteDamage($Player, $indShip, null, $nature, $i);
-				}
-			}
+				return $this->DeleteShip($Player, $indShip);
+			if ($this->CheckObs($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
+				return $this->DeleteShip($Player, $indShip);
+			if ($this->CheckShip($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
+				return -2;
 		}
-		AddModif($Player, $this->_Xmin, $this->_Xmax - $move, $indShip, $move);
 		return true;
 	}
 
-	private function MoveXmax($move, $indShip, $Player, $obstacles, $nature)
-	{
-		$i = 0;
-		$this->InitPos($player, $indShip);
-		$posend = $this->_Xmax + $move;
-		while ($this->_Xmax < $posend)
-		{
-			$this->_Xmax++;
-			if ($this->Xmax == 150)
-				return $this->DeleteDamage($Player, $indShip, null, $nature, $i);
-			$i++;
-			foreach($obstacles as $obs)
-			{
-				if ($this->_Xmax >= $obs->getXmin())
-				{
-					if ($this->_Ymax - $this->_Ymin >= $obs->getYmax() - $obs->getYmin())
-					{
-						if (($obs->getYmin() >= $this->_Ymin && $obs->getYmin() <= $this->_Ymax)
-							|| ($obs->getYmax() >= $this->_Ymin && $obs->getYmax() <= $this->_Ymax))
-							return $this->DeleteDamage($Player, $indShip, null, $nature, $i);
-					}
-					else
-						if (($this->_Ymin >= $obs->getYmin() && $this->_Ymin <= $obs->getYmax())
-							|| ($this->_Ymax >= $obs->getYmin() && $this->_Ymax <= $obs->getYmax()))
-							return $this->DeleteDamage($Player, $indShip, null, $nature, $i);
-				}
-			}
-		}
-		AddModif($Player, $this->_Xmax, $this->_Xmin + $moove, $indShip, $move);
-		return true;
-	}
-
-	//TODO
-	private function MoveYmin($move, $indShip, $Player, $obstacles, $nature)
-	{
-		$i = 0;
-		$this->InitPos($player, $indShip);
-		$posend = $this->_Ymin - $move;
-		while ($this->_Xmax < $posend)
-		{
-			$this->_Xmax++;
-			$i++;
-			foreach($obstacles as $obs)
-			{
-				if ($this->_Xmax >= $obs->getXmin())
-				{
-					if ($this->_Ymax - $this->_Ymin >= $obs->getYmax() - $obs->getYmin())
-					{
-						if (($obs->getYmin() >= $this->_Ymin && $obs->getYmin() <= $this->_Ymax)
-				            || ($obs->getYmax() >= $this->_Ymin && $obs->getYmax() <= $this->_Ymax))
-                            return $this->DeleteDamage($Player, $indShip, null, $nature, $i);
-                    }
-                    else
-                        if (($this->_Ymin >= $obs->getYmin() && $this->_Ymin <= $obs->getYmax())
-                            || ($this->_Ymax >= $obs->getYmin() && $this->_Ymax <= $obs->getYmax()))
-                            return $this->DeleteDamage($Player, $indShip, null, $nature, $i);
-                }
-            }
-        }
-        AddModif($Player, $this->_Xmax, $this->_Xmin + $moove, $indShip, $move);
-        return true;
-    }
-
-    //TODO
-    private function MoveYmax($move, $indShip, $Player, $obstacles, $nature)
+	private function MoveRight($move, $indShip, $Player)
     {
-        $i = 0;
-        $this->InitPos($player, $indShip);
-        $posend = $this->_Ymin - $move;
+        $this->InitPos($Player, $indShip);
+        $posend = $this->_Xmax + $move;
         while ($this->_Xmax < $posend)
         {
             $this->_Xmax++;
-            $i++;
-            foreach($obstacles as $obs)
-            {
-                if ($this->_Xmax >= $obs->getXmin())
-                {
-                    if ($this->_Ymax - $this->_Ymin >= $obs->getYmax() - $obs->getYmin())
-                    {
-                        if (($obs->getYmin() >= $this->_Ymin && $obs->getYmin() <= $this->_Ymax)
-                            || ($obs->getYmax() >= $this->_Ymin && $obs->getYmax() <= $this->_Ymax))
-                            return $this->DeleteDamage($Player, $indShip, null, $nature, $i);
-                    }
-                    else
-                        if (($this->_Ymin >= $obs->getYmin() && $this->_Ymin <= $obs->getYmax())
-                            || ($this->_Ymax >= $obs->getYmin() && $this->_Ymax <= $obs->getYmax()))
-                            return $this->DeleteDamage($Player, $indShip, null, $nature, $i);
-                }
-            }
+            if ($this->Xmax == 150)
+                return $this->DeleteShip($Player, $indShip);
+            if ($this->CheckObs($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
+                return $this->DeleteShip($Player, $indShip);
+            if ($this->CheckShip($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
+                return -2;
         }
-        AddModif($Player, $this->_Xmax, $this->_Xmin + $moove, $indShip, $move);
         return true;
     }
 
+	private function MoveTop($move, $indShip, $Player)
+    {
+        $this->InitPos($Player, $indShip);
+        $posend = $this->_Ymin - $move;
+        while ($this->_Ymin > $posend)
+        {
+            $this->_Ymin--;
+            if ($this->Ymin == -1)
+                return $this->DeleteShip($Player, $indShip);
+            if ($this->CheckObs($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
+                return $this->DeleteShip($Player, $indShip);
+            if ($this->CheckShip($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
+                return -2;
+        }
+        return true;
+    }
+	
+	private function MoveBottom($move, $indShip, $Player)
+    {
+		$this->InitPos($Player, $indShip)
+        $posend = $this->_Ymax + $move;
+        while ($this->_Ymax < $posend)
+        {
+            $this->_Ymax++;
+            if ($this->Ymax == 150)
+                return $this->DeleteShip($Player, $indShip, $Vue);
+            if ($this->CheckObs($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
+                return $this->DeleteShip($Player, $indShip, $Vue);
+            if ($this->CheckShip($this->_Xmax, $this->_Xmin, $this->_Ymax, $this->_Ymin) == false)
+                return -2;
+        }
+        return true;
+    }
+
+	private function CheckObs($Xmax, $Xmin, $Ymax, $Ymin)
+	{
+		foreach($this->_obstacles as $obs)
+		{
+			if ($Xmin <= $obs['Xmax'] || $Xmax >= $obs['Xmin'])
+			{
+				if ($Ymax - $Ymin >= $obs['Ymax'] - $obs['Ymin'])
+				{
+					if (($obs['Ymin'] >= $Ymin && $obs['Ymin'] <= $Ymax) || ($obs['Ymax'] >= $Ymin && $obs['Ymax'] <= $Ymax))
+						return false;
+				}
+				else
+					if (($Ymin >= $obs['Ymin'] && $Ymin <= $obs['Ymax']) || ($Ymax >= $obs['Ymin'] && $Ymax <= $obs['Ymax']))
+						return false;
+			}
+			if ($Ymin <= $obs['Ymax'] || $Ymax >= $obs['Ymin'])
+            {
+                if ($Xmax - $Xmin >= $obs['Xmax'] - $obs['Xmin'])
+                {
+                    if (($obs['Xmin'] >= $Xmin && $obs['Xmin'] <= $Xmax) || ($obs['Xmax'] >= $Xmin && $obs['Xmax'] <= $Xmax))
+                        return false;
+                }
+                else
+                    if (($Xmin >= $obs['Xmin'] && $Xmin <= $obs['Xmax']) || ($Xmax >= $obs['Xmin'] && $Xmax <= $obs['Xmax']))
+                        return false;
+            }
+		}
+		return true;
+	}
+	
+	private function CheckShips($Xmax, $Xmin, $Ymax, $Ymin)
+    {
+		$ships = $this->_p1->getShips();
+        foreach($ships as $sps)
+        {
+            if ($Xmin <= $sps->getXmax() || $Xmax >= $sps->getXmin())
+            {
+                if ($Ymax - $Ymin >= $sps->getYmax() - $sps->getYmin())
+                {
+                    if (($sps->getYmin() >= $Ymin && $sps->getYmin() <= $Ymax) || ($sps->getYmax() >= $Ymin && $sps->getYmax() <= $Ymax))
+                        return false;
+                }
+                else
+                    if (($Ymin >= $sps->getYmin() && $Ymin <= $sps->getYmax()) || ($Ymax >= $sps->getYmin() && $Ymax <= $sps->getYmax()))
+                        return false;
+            }
+            if ($Ymin <= $sps->getYmax() || $Ymax >= $sps->getYmin())
+            {
+                if ($Xmax - $Xmin >= $sps->getXmax() - $sps->getXmin())
+                {
+                    if (($sps->getXmin() >= $Xmin && $sps->getXmin() <= $Xmax) || ($sps->getXmax() >= $Xmin && $sps->getXmax() <= $Xmax))
+                        return false;
+                }
+                else
+                    if (($Xmin >= $sps->getXmin() && $Xmin <= $sps->getXmax()) || ($Xmax >= $sps->getXmin() && $Xmax <= $sps->getXmax()))
+                        return false;
+            }
+        }
+		$ships = $this->_p2->getShips();
+		foreach($ships as $sps)
+        {
+            if ($Xmin <= $sps->getXmax() || $Xmax >= $sps->getXmin())
+            {
+                if ($Ymax - $Ymin >= $sps->getYmax() - $sps->getYmin())
+                {
+                    if (($sps->getYmin() >= $Ymin && $sps->getYmin() <= $Ymax) || ($sps->getYmax() >= $Ymin && $sps->getYmax() <= $Ymax))
+                        return false;
+                }
+                else
+                    if (($Ymin >= $sps->getYmin() && $Ymin <= $sps->getYmax()) || ($Ymax >= $sps->getYmin() && $Ymax <= $sps->getYmax()))
+                        return false;
+            }
+            if ($Ymin <= $sps->getYmax() || $Ymax >= $sps->getYmin())
+            {
+                if ($Xmax - $Xmin >= $sps->getXmax() - $sps->getXmin())
+                {
+                    if (($sps->getXmin() >= $Xmin && $sps->getXmin() <= $Xmax) || ($sps->getXmax() >= $Xmin && $sps->getXmax() <= $Xmax))
+                        return false;
+                }
+                else
+                    if (($Xmin >= $sps->getXmin() && $Xmin <= $sps->getXmax()) || ($Xmax >= $sps->getXmin() && $Xmax <= $sps->getXmax()))
+                        return false;
+            }
+        }
+        return true;
+    }
 
 	//SET
 	public function init_obstacle($obs)
