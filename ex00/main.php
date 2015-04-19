@@ -1,3 +1,10 @@
+<html>
+    <head>
+        <link href="wow.css" rel="stylesheet">
+     </head>
+
+    <body>
+
 <?php
 
 require_once("Player.class.php");
@@ -7,21 +14,39 @@ require_once("ExempleShip.class.php");
 
 function init()
 {
-    $z = new zone(["3" => 2]);
 
-	$g1 = New gun();
-	$g2 = New gun();
-	$g3 = New gun();
-	$g4 = New gun();
+	$g1 = New ExempleGun();
+	$g2 = New ExempleGun();
+	$g3 = New ExempleGun();
+	$g4 = New ExempleGun();
 
-	$s1 = New ship([$g1, $g2, $g3]);
-	$s2 = New ship([$g1, $g2, $g3]);
-	$s3 = New ship([$g2, $g3]);
-	$s4 = New ship([$g1, $g3]);
+	$s1 = New ExempleShip([$g1, $g2, $g3]);
+	$s2 = New ExempleShip([$g1, $g2, $g3]);
+	$s3 = New ExempleShip([$g2, $g3]);
+	$s4 = New ExempleShip([$g1, $g3]);
+
+   $s1->setXMin(100);
+   $s1->setXMax(110);
+   $s1->setYMin(80);
+   $s1->setYMax(84);
+
+   $s2->setXMin(30);
+   $s2->setXMax(40);
+   $s2->setYMin(60);
+   $s2->setYMax(64);
+
+   $s3->setXMin(60);
+   $s3->setXMax(70);
+   $s3->setYMin(20);
+   $s3->setYMax(24);
+
 
 	$p1 = New player([$s1, $s2]);
 	$p2 = New player([$s3, $s4]);
 
+    $z = new zone(array("p1" => $p1,
+						"p2" => $p2));
+    $z->aff_map();
 }
 
 function gameLoop()
@@ -58,3 +83,7 @@ gameLoop();
 echo "game over";
 
 ?>
+
+
+    </body>
+</html>

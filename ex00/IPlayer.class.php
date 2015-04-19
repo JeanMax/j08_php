@@ -8,17 +8,17 @@ interface IPlayer
 	  public static $verbose;
     */
 
-    public function __construct(array $ships);
+ //   public function __construct(array $ships);
 
-	public function canPlay();
+//	public function canPlay();
 
-	public function isAlive();
+//	public function isAlive();
 /*
 	return false if the player is ship-less
 */
 
 
-	public function check_collision($xMin, $xMax, $yMin, $yMax);
+//	public function check_collision($xMin, $xMax, $yMin, $yMax);
 
 }
 

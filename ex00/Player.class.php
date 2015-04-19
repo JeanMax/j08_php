@@ -1,5 +1,7 @@
 <?php
 
+require_once("IPlayer.class.php");
+
 class Player implements IPlayer
 {
     private $_ships;
@@ -16,7 +18,7 @@ class Player implements IPlayer
 			echo "Player constructed.".PHP_EOL;
 	}
 
-	public function __destruct(array $ships)
+	public function __destruct()
 	{
 		if (self::$verbose)
 			echo "Player destructed.".PHP_EOL;

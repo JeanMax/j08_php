@@ -52,6 +52,58 @@ class Zone implements IZone
 			echo "Zone destructed.".PHP_EOL;
 	}
 
+
+	//PUBLIC
+	public     function aff_map()
+    {
+        echo '<table>';
+
+        $p1Ships = $this->getP1()->getShips();
+        $p2Ships = $this->getP2()->getShips();
+		
+		foreach($p1Ships as $ship)
+		{        
+			$X = 12 * $ship->getXMin();
+        	$Y = 12 * $ship->getYMin();
+        	$SX = 12 * ($ship->getXMax() - $ship->getXMin()) - 1;
+        	$SY = 12 * ($ship->getYMax() - $ship->getYMin()) - 1;
+
+        	echo '<img src= '.$ship->getSprite().' style="background-color:red; left:'.$X.'px; top:'.$Y.'px; width:'.$SX.'px;height:'.$SY.'px;" alt="Vaisse11" class="vais">';
+        }
+
+        foreach($p2Ships as $ship2)
+		{        
+			$X = 12 * $ship2->getXMin();
+        	$Y = 12 * $ship2->getYMin();
+        	$SX = 12 * ($ship2->getXMax() - $ship2->getXMin()) - 1;
+        	$SY = 12 * ($ship2->getYMax() - $ship2->getYMin()) - 1;
+
+        	echo '<img src= '.$ship2->getSprite().' style="background-color:blue; left:'.$X.'px; top:'.$Y.'px; width:'.$SX.'px;height:'.$SY.'px;" alt="Vaisse11" class="vais">';
+        }
+
+        	echo '<img src="img/asteroidBig01.png" alt="asteroid" class="asteroid">';
+        	echo '<img src="img/asteroidBig01.png" alt="asteroid" class="asteroid1">';
+        	echo '<img src="img/asteroidBig01.png" alt="asteroid" class="asteroid2">';
+        	echo '<img src="img/asteroidBig01.png" alt="asteroid" class="asteroid3">';
+
+        $y = 0;
+
+        while ($y < 100)
+        {
+            echo '<tr>';
+            $x = 0;
+            while ($x < 150)
+            {
+                echo '<td class = "black" ></td>';
+                $x++;
+            }
+            echo '</tr>';
+            $y++;
+        }
+        echo '</table>';
+    }
+
+
 	//SET
 	public function init_obstacle($obs)
 	{
@@ -136,6 +188,5 @@ $j++;
 print("\n");
 $i++;
 */
-}
 
 ?>
