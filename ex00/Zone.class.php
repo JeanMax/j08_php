@@ -198,7 +198,7 @@ class Zone implements IZone
 	
 	private function MoveBottom($move, $indShip, $Player)
     {
-		$this->InitPos($Player, $indShip)
+		$this->InitPos($Player, $indShip);
         $posend = $this->_Ymax + $move;
         while ($this->_Ymax < $posend)
         {
